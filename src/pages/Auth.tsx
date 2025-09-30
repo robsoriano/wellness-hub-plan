@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,140 +8,101 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { z } from "zod";
+import { Apple } from "lucide-react";
 
-const signupSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
-  role: z.enum(["nutritionist", "patient"]),
-});
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+type UserRole = "nutritionist" | "patient";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState<"nutritionist" | "patient">("patient");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState<UserRole>("patient");
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/dashboard");
-      }
-    });
-  }, [navigate]);
-
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      email: formData.get("signup-email") as string,
-      password: formData.get("signup-password") as string,
-      fullName: formData.get("fullName") as string,
-      role,
-    };
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+      toast.success("Signed in successfully!");
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const validated = signupSchema.parse(data);
-      
       const { error } = await supabase.auth.signUp({
-        email: validated.email,
-        password: validated.password,
+        email,
+        password,
         options: {
           data: {
-            full_name: validated.fullName,
-            role: validated.role,
+            full_name: fullName,
+            role: role,
           },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
 
       if (error) throw error;
-      
-      toast.success("Account created successfully!");
-      navigate("/dashboard");
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
-      } else if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      email: formData.get("login-email") as string,
-      password: formData.get("login-password") as string,
-    };
-
-    try {
-      const validated = loginSchema.parse(data);
-      
-      const { error } = await supabase.auth.signInWithPassword({
-        email: validated.email,
-        password: validated.password,
-      });
-
-      if (error) throw error;
-      
-      toast.success("Logged in successfully!");
-      navigate("/dashboard");
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
-      } else if (error instanceof Error) {
-        toast.error(error.message);
-      }
+      toast.success("Account created! Please sign in.");
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Welcome to NutriTrack</CardTitle>
-          <CardDescription>Sign in or create an account to continue</CardDescription>
+        <CardHeader className="space-y-1 text-center">
+          <div className="flex items-center justify-center mb-2">
+            <Apple className="h-8 w-8 text-primary" />
+          </div>
+          <CardTitle className="text-2xl font-bold">Welcome to NutriTrack</CardTitle>
+          <CardDescription>Sign in or create an account to get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login">
+          <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login">
+            <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="signin-email">Email</Label>
                   <Input
-                    id="login-email"
-                    name="login-email"
+                    id="signin-email"
                     type="email"
                     placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="signin-password">Password</Label>
                   <Input
-                    id="login-password"
-                    name="login-password"
+                    id="signin-password"
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>
@@ -154,12 +115,13 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="signup-name">Full Name</Label>
                   <Input
-                    id="fullName"
-                    name="fullName"
+                    id="signup-name"
                     type="text"
                     placeholder="John Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
                     required
                   />
                 </div>
@@ -167,9 +129,10 @@ const Auth = () => {
                   <Label htmlFor="signup-email">Email</Label>
                   <Input
                     id="signup-email"
-                    name="signup-email"
                     type="email"
                     placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -177,15 +140,16 @@ const Auth = () => {
                   <Label htmlFor="signup-password">Password</Label>
                   <Input
                     id="signup-password"
-                    name="signup-password"
                     type="password"
-                    placeholder="At least 6 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>I am a:</Label>
-                  <RadioGroup value={role} onValueChange={(value) => setRole(value as "nutritionist" | "patient")}>
+                  <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="patient" id="patient" />
                       <Label htmlFor="patient" className="cursor-pointer">Patient</Label>

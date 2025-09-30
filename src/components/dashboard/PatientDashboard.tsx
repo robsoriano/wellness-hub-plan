@@ -1,74 +1,82 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import DashboardHeader from "./DashboardHeader";
+import DashboardNav from "./DashboardNav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Apple, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, TrendingUp, Apple, MessageSquare } from "lucide-react";
 
-interface PatientDashboardProps {
+type PatientDashboardProps = {
+  profile: {
+    full_name: string;
+    email: string;
+  };
   userId: string;
-}
+};
 
-const PatientDashboard = ({ userId }: PatientDashboardProps) => {
-  const [profile, setProfile] = useState<any>(null);
+type MealPlan = {
+  id: string;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+};
+
+const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
+  const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const { data } = await supabase
-        .from("profiles")
+    const fetchMealPlans = async () => {
+      const { data, error } = await supabase
+        .from("meal_plans")
         .select("*")
-        .eq("id", userId)
-        .single();
+        .eq("patient_id", userId)
+        .eq("is_active", true);
 
-      setProfile(data);
+      if (error) {
+        console.error("Error fetching meal plans:", error);
+      } else {
+        setMealPlans(data || []);
+      }
+      setLoading(false);
     };
 
-    fetchProfile();
+    fetchMealPlans();
   }, [userId]);
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader title="My Dashboard" userName={profile?.full_name} />
+      <DashboardNav userName={profile.full_name} />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold mb-2">Welcome back, {profile?.full_name}!</h2>
-          <p className="text-muted-foreground">Here's your nutrition journey overview</p>
+      <div className="container py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">My Dashboard</h1>
+          <p className="text-muted-foreground">Track your nutrition journey</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="grid gap-6 md:grid-cols-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">0 days</div>
-              <p className="text-xs text-muted-foreground">Keep it up!</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Meals Logged</CardTitle>
+              <CardTitle className="text-sm font-medium">Today's Meals</CardTitle>
               <Apple className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">This week</p>
+              <div className="text-2xl font-bold">3/3</div>
+              <p className="text-xs text-muted-foreground">Completed</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Progress</CardTitle>
+              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">--</div>
-              <p className="text-xs text-muted-foreground">No data yet</p>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">Days</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Next Check-in</CardTitle>
@@ -79,39 +87,64 @@ const PatientDashboard = ({ userId }: PatientDashboardProps) => {
               <p className="text-xs text-muted-foreground">Not scheduled</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Messages</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">Unread</p>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Today's Meal Plan</CardTitle>
-              <CardDescription>Your personalized nutrition plan for today</CardDescription>
+              <CardTitle>Active Meal Plans</CardTitle>
+              <CardDescription>Your current nutrition plans</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">No meal plan assigned yet. Contact your nutritionist to get started!</p>
+              {loading ? (
+                <p>Loading meal plans...</p>
+              ) : mealPlans.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Apple className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No active meal plans yet.</p>
+                  <p className="text-sm">Your nutritionist will create one for you soon!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {mealPlans.map((plan) => (
+                    <div key={plan.id} className="p-4 border rounded-lg">
+                      <h3 className="font-medium mb-1">{plan.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(plan.start_date).toLocaleDateString()} - {new Date(plan.end_date).toLocaleDateString()}
+                        </span>
+                        <Button size="sm" variant="outline">View Details</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
-              <CardTitle>Quick Tips</CardTitle>
-              <CardDescription>Personalized nutrition tips for you</CardDescription>
+              <CardTitle>Progress Log</CardTitle>
+              <CardDescription>Track your daily progress</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start">
-                  <span className="mr-2">💧</span>
-                  <span>Stay hydrated - aim for 8 glasses of water daily</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">🥗</span>
-                  <span>Include vegetables in every meal</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">🍎</span>
-                  <span>Choose whole fruits over fruit juice</span>
-                </li>
-              </ul>
+              <div className="text-center py-8 text-muted-foreground">
+                <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>No progress logs yet.</p>
+                <Button className="mt-4" size="sm">Log Today's Progress</Button>
+              </div>
             </CardContent>
           </Card>
         </div>
