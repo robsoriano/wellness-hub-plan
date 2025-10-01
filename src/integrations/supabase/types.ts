@@ -165,28 +165,55 @@ export type Database = {
       }
       patients: {
         Row: {
+          activity_level: string | null
+          age: number | null
+          bmi: number | null
+          body_fat_percentage: number | null
           created_at: string | null
+          dietary_restrictions: string | null
+          height: number | null
           id: string
+          metabolic_age: number | null
           notes: string | null
           nutritionist_id: string
           patient_id: string
           status: string | null
+          target_weight: number | null
+          weight: number | null
         }
         Insert: {
+          activity_level?: string | null
+          age?: number | null
+          bmi?: number | null
+          body_fat_percentage?: number | null
           created_at?: string | null
+          dietary_restrictions?: string | null
+          height?: number | null
           id?: string
+          metabolic_age?: number | null
           notes?: string | null
           nutritionist_id: string
           patient_id: string
           status?: string | null
+          target_weight?: number | null
+          weight?: number | null
         }
         Update: {
+          activity_level?: string | null
+          age?: number | null
+          bmi?: number | null
+          body_fat_percentage?: number | null
           created_at?: string | null
+          dietary_restrictions?: string | null
+          height?: number | null
           id?: string
+          metabolic_age?: number | null
           notes?: string | null
           nutritionist_id?: string
           patient_id?: string
           status?: string | null
+          target_weight?: number | null
+          weight?: number | null
         }
         Relationships: [
           {

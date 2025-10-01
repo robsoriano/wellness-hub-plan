@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardNav from "./DashboardNav";
+import AddPatientDialog from "./AddPatientDialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Calendar, MessageSquare, Plus } from "lucide-react";
@@ -26,30 +27,31 @@ type PatientData = {
 const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) => {
   const [patients, setPatients] = useState<PatientData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addPatientOpen, setAddPatientOpen] = useState(false);
+
+  const fetchPatients = async () => {
+    const { data, error } = await supabase
+      .from("patients")
+      .select(`
+        id,
+        patient_id,
+        status,
+        profiles!patients_patient_id_fkey (
+          full_name,
+          email
+        )
+      `)
+      .eq("nutritionist_id", userId);
+
+    if (error) {
+      console.error("Error fetching patients:", error);
+    } else {
+      setPatients(data || []);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchPatients = async () => {
-      const { data, error } = await supabase
-        .from("patients")
-        .select(`
-          id,
-          patient_id,
-          status,
-          profiles!patients_patient_id_fkey (
-            full_name,
-            email
-          )
-        `)
-        .eq("nutritionist_id", userId);
-
-      if (error) {
-        console.error("Error fetching patients:", error);
-      } else {
-        setPatients(data || []);
-      }
-      setLoading(false);
-    };
-
     fetchPatients();
   }, [userId]);
 
@@ -63,7 +65,7 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
             <h1 className="text-3xl font-bold">Nutritionist Dashboard</h1>
             <p className="text-muted-foreground">Manage your patients and meal plans</p>
           </div>
-          <Button>
+          <Button onClick={() => setAddPatientOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Patient
           </Button>
@@ -141,6 +143,13 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
           </CardContent>
         </Card>
       </div>
+
+      <AddPatientDialog
+        open={addPatientOpen}
+        onOpenChange={setAddPatientOpen}
+        nutritionistId={userId}
+        onPatientAdded={fetchPatients}
+      />
     </div>
   );
 };
