@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardNav from "./DashboardNav";
 import AddPatientDialog from "./AddPatientDialog";
@@ -25,6 +26,7 @@ type PatientData = {
 };
 
 const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) => {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState<PatientData[]>([]);
   const [loading, setLoading] = useState(true);
   const [addPatientOpen, setAddPatientOpen] = useState(false);
@@ -132,10 +134,13 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
                       <p className="font-medium">{patient.profiles.full_name}</p>
                       <p className="text-sm text-muted-foreground">{patient.profiles.email}</p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">View</Button>
-                      <Button variant="outline" size="sm">Meal Plan</Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/patient/${patient.id}`)}
+                    >
+                      View Details
+                    </Button>
                   </div>
                 ))}
               </div>
