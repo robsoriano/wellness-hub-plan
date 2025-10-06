@@ -5,7 +5,8 @@ import DashboardNav from "./DashboardNav";
 import AddPatientDialog from "./AddPatientDialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Calendar, MessageSquare, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Users, Calendar, MessageSquare, Plus, Search } from "lucide-react";
 
 type NutritionistDashboardProps = {
   profile: {
@@ -30,6 +31,7 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
   const [patients, setPatients] = useState<PatientData[]>([]);
   const [loading, setLoading] = useState(true);
   const [addPatientOpen, setAddPatientOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchPatients = async () => {
     const { data, error } = await supabase
@@ -56,6 +58,11 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
   useEffect(() => {
     fetchPatients();
   }, [userId]);
+
+  const filteredPatients = patients.filter(patient => 
+    patient.profiles.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    patient.profiles.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,8 +123,24 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
             <CardDescription>View and manage your patient list</CardDescription>
           </CardHeader>
           <CardContent>
+            {patients.length > 0 && (
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search patients by name or email..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+            )}
             {loading ? (
               <p>Loading patients...</p>
+            ) : filteredPatients.length === 0 && searchQuery ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>No patients found matching "{searchQuery}"</p>
+              </div>
             ) : patients.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -125,7 +148,7 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
               </div>
             ) : (
               <div className="space-y-4">
-                {patients.map((patient) => (
+                {filteredPatients.map((patient) => (
                   <div
                     key={patient.id}
                     className="flex items-center justify-between p-4 border rounded-lg"
