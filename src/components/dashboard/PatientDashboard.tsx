@@ -220,7 +220,7 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
                 size="sm" 
                 variant="outline" 
                 className="w-full"
-                onClick={() => navigate(`/patient/${userId}`)}
+                onClick={() => navigate("/profile")}
               >
                 View Profile
               </Button>
