@@ -3,9 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardNav from "./DashboardNav";
 import AddPatientDialog from "./AddPatientDialog";
+import RecipeLibrary from "./RecipeLibrary";
+import MealTemplates from "./MealTemplates";
+import AppointmentCalendar from "./AppointmentCalendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Calendar, MessageSquare, Plus, Search } from "lucide-react";
 
 type NutritionistDashboardProps = {
@@ -117,59 +121,82 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Patients</CardTitle>
-            <CardDescription>View and manage your patient list</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {patients.length > 0 && (
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search patients by name or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-            )}
-            {loading ? (
-              <p>Loading patients...</p>
-            ) : filteredPatients.length === 0 && searchQuery ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No patients found matching "{searchQuery}"</p>
-              </div>
-            ) : patients.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No patients yet. Add your first patient to get started!</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredPatients.map((patient) => (
-                  <div
-                    key={patient.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div>
-                      <p className="font-medium">{patient.profiles.full_name}</p>
-                      <p className="text-sm text-muted-foreground">{patient.profiles.email}</p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate(`/patient/${patient.id}`)}
-                    >
-                      View Details
-                    </Button>
+        <Tabs defaultValue="patients" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="patients">Patients</TabsTrigger>
+            <TabsTrigger value="recipes">Recipes</TabsTrigger>
+            <TabsTrigger value="templates">Templates</TabsTrigger>
+            <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="patients" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Patients</CardTitle>
+                <CardDescription>View and manage your patient list</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {patients.length > 0 && (
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search patients by name or email..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9"
+                    />
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                )}
+                {loading ? (
+                  <p>Loading patients...</p>
+                ) : filteredPatients.length === 0 && searchQuery ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No patients found matching "{searchQuery}"</p>
+                  </div>
+                ) : patients.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No patients yet. Add your first patient to get started!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredPatients.map((patient) => (
+                      <div
+                        key={patient.id}
+                        className="flex items-center justify-between p-4 border rounded-lg"
+                      >
+                        <div>
+                          <p className="font-medium">{patient.profiles.full_name}</p>
+                          <p className="text-sm text-muted-foreground">{patient.profiles.email}</p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate(`/patient/${patient.id}`)}
+                        >
+                          View Details
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="recipes" className="mt-6">
+            <RecipeLibrary />
+          </TabsContent>
+
+          <TabsContent value="templates" className="mt-6">
+            <MealTemplates />
+          </TabsContent>
+
+          <TabsContent value="appointments" className="mt-6">
+            <AppointmentCalendar userRole="nutritionist" userId={userId} />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <AddPatientDialog

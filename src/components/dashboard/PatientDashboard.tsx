@@ -3,8 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import DashboardNav from "./DashboardNav";
 import MealPlanDetail from "./MealPlanDetail";
 import AddProgressLogDialog from "./AddProgressLogDialog";
+import GoalProgress from "./GoalProgress";
+import AppointmentCalendar from "./AppointmentCalendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, TrendingUp, Apple, MessageSquare, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -228,102 +231,120 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
           </Card>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Active Meal Plans</CardTitle>
-              <CardDescription>Your current nutrition plans</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <p>Loading meal plans...</p>
-              ) : mealPlans.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Apple className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No active meal plans yet.</p>
-                  <p className="text-sm">Your nutritionist will create one for you soon!</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {mealPlans.map((plan) => (
-                    <div key={plan.id} className="p-4 border rounded-lg">
-                      <h3 className="font-medium mb-1">{plan.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(plan.start_date).toLocaleDateString()} - {new Date(plan.end_date).toLocaleDateString()}
-                        </span>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleViewMealPlan(plan.id)}
-                        >
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="progress">Progress</TabsTrigger>
+            <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          </TabsList>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Progress</CardTitle>
-              <CardDescription>Your latest health updates</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {recentLogs.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No progress logs yet.</p>
-                  <Button 
-                    className="mt-4" 
-                    size="sm"
-                    onClick={() => setProgressDialogOpen(true)}
-                  >
-                    Log Today's Progress
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <Button 
-                    className="w-full mb-4" 
-                    onClick={() => setProgressDialogOpen(true)}
-                  >
-                    Log Today's Progress
-                  </Button>
-                  {recentLogs.map((log) => (
-                    <div key={log.id} className="p-4 border rounded-lg">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-medium">
-                          {new Date(log.log_date).toLocaleDateString()}
-                        </span>
-                        {log.weight && (
-                          <span className="text-sm font-medium">
-                            {log.weight} kg
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        {log.energy_level && (
-                          <p>Energy: {log.energy_level}/10</p>
-                        )}
-                        {log.mood && (
-                          <p>Mood: {log.mood}</p>
-                        )}
-                        {log.notes && (
-                          <p className="text-xs mt-2">{log.notes}</p>
-                        )}
-                      </div>
+          <TabsContent value="overview" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Active Meal Plans</CardTitle>
+                  <CardDescription>Your current nutrition plans</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {loading ? (
+                    <p>Loading meal plans...</p>
+                  ) : mealPlans.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Apple className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No active meal plans yet.</p>
+                      <p className="text-sm">Your nutritionist will create one for you soon!</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {mealPlans.map((plan) => (
+                        <div key={plan.id} className="p-4 border rounded-lg">
+                          <h3 className="font-medium mb-1">{plan.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(plan.start_date).toLocaleDateString()} - {new Date(plan.end_date).toLocaleDateString()}
+                            </span>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleViewMealPlan(plan.id)}
+                            >
+                              View Details
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Progress</CardTitle>
+                  <CardDescription>Your latest health updates</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {recentLogs.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No progress logs yet.</p>
+                      <Button 
+                        className="mt-4" 
+                        size="sm"
+                        onClick={() => setProgressDialogOpen(true)}
+                      >
+                        Log Today's Progress
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <Button 
+                        className="w-full mb-4" 
+                        onClick={() => setProgressDialogOpen(true)}
+                      >
+                        Log Today's Progress
+                      </Button>
+                      {recentLogs.map((log) => (
+                        <div key={log.id} className="p-4 border rounded-lg">
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="font-medium">
+                              {new Date(log.log_date).toLocaleDateString()}
+                            </span>
+                            {log.weight && (
+                              <span className="text-sm font-medium">
+                                {log.weight} kg
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            {log.energy_level && (
+                              <p>Energy: {log.energy_level}/10</p>
+                            )}
+                            {log.mood && (
+                              <p>Mood: {log.mood}</p>
+                            )}
+                            {log.notes && (
+                              <p className="text-xs mt-2">{log.notes}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="progress" className="mt-6">
+            <GoalProgress patientId={userId} />
+          </TabsContent>
+
+          <TabsContent value="appointments" className="mt-6">
+            <AppointmentCalendar userRole="patient" userId={userId} />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <AddProgressLogDialog

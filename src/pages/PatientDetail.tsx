@@ -9,6 +9,8 @@ import PatientOverview from "@/components/dashboard/PatientOverview";
 import MealPlans from "@/components/dashboard/MealPlans";
 import ProgressTracking from "@/components/dashboard/ProgressTracking";
 import MessageThread from "@/components/messaging/MessageThread";
+import ProgressCharts from "@/components/dashboard/ProgressCharts";
+import GoalProgress from "@/components/dashboard/GoalProgress";
 
 type PatientData = {
   id: string;
@@ -123,11 +125,15 @@ const PatientDetail = () => {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="meal-plans">Meal Plans</TabsTrigger>
             <TabsTrigger value="progress">Progress Tracking</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="messages">Messages</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">
-            <PatientOverview patient={patient} onUpdate={(updatedPatient) => setPatient(updatedPatient)} />
+            <div className="space-y-6">
+              <PatientOverview patient={patient} onUpdate={(updatedPatient) => setPatient(updatedPatient)} />
+              <GoalProgress patientId={patient.patient_id} />
+            </div>
           </TabsContent>
 
           <TabsContent value="meal-plans" className="mt-6">
@@ -136,6 +142,10 @@ const PatientDetail = () => {
 
           <TabsContent value="progress" className="mt-6">
             <ProgressTracking patientId={patient.patient_id} />
+          </TabsContent>
+
+          <TabsContent value="analytics" className="mt-6">
+            <ProgressCharts patientId={patient.patient_id} />
           </TabsContent>
 
           <TabsContent value="messages" className="mt-6">

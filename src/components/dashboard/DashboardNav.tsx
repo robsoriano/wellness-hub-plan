@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Apple, LogOut, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import NotificationBell from "./NotificationBell";
 
 type DashboardNavProps = {
   userName: string;
@@ -26,6 +27,7 @@ const DashboardNav = ({ userName }: DashboardNavProps) => {
         </div>
         <div className="flex items-center gap-4">
           <span className="text-sm text-muted-foreground">Welcome, {userName}</span>
+          <NotificationBell />
           <Button variant="ghost" size="sm" onClick={() => navigate("/messages")}>
             <MessageSquare className="h-4 w-4 mr-2" />
             Messages
