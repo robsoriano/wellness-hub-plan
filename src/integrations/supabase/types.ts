@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          nutritionist_id: string
+          patient_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          nutritionist_id: string
+          patient_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          nutritionist_id?: string
+          patient_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       meal_plan_items: {
         Row: {
           calories: number | null
@@ -121,6 +160,33 @@ export type Database = {
           },
         ]
       }
+      meal_templates: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          nutritionist_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          nutritionist_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          nutritionist_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           created_at: string | null
@@ -162,6 +228,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          read: boolean | null
+          related_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          related_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          related_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       patients: {
         Row: {
@@ -305,6 +404,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      recipe_ingredients: {
+        Row: {
+          id: string
+          ingredient_name: string
+          quantity: string
+          recipe_id: string
+          unit: string | null
+        }
+        Insert: {
+          id?: string
+          ingredient_name: string
+          quantity: string
+          recipe_id: string
+          unit?: string | null
+        }
+        Update: {
+          id?: string
+          ingredient_name?: string
+          quantity?: string
+          recipe_id?: string
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      recipes: {
+        Row: {
+          calories: number | null
+          carbs: number | null
+          cook_time: number | null
+          created_at: string | null
+          description: string | null
+          fats: number | null
+          id: string
+          image_url: string | null
+          instructions: string | null
+          name: string
+          nutritionist_id: string
+          prep_time: number | null
+          protein: number | null
+          servings: number | null
+        }
+        Insert: {
+          calories?: number | null
+          carbs?: number | null
+          cook_time?: number | null
+          created_at?: string | null
+          description?: string | null
+          fats?: number | null
+          id?: string
+          image_url?: string | null
+          instructions?: string | null
+          name: string
+          nutritionist_id: string
+          prep_time?: number | null
+          protein?: number | null
+          servings?: number | null
+        }
+        Update: {
+          calories?: number | null
+          carbs?: number | null
+          cook_time?: number | null
+          created_at?: string | null
+          description?: string | null
+          fats?: number | null
+          id?: string
+          image_url?: string | null
+          instructions?: string | null
+          name?: string
+          nutritionist_id?: string
+          prep_time?: number | null
+          protein?: number | null
+          servings?: number | null
+        }
+        Relationships: []
       }
     }
     Views: {
