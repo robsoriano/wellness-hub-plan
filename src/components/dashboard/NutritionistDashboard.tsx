@@ -6,6 +6,7 @@ import AddPatientDialog from "./AddPatientDialog";
 import RecipeLibrary from "./RecipeLibrary";
 import MealTemplates from "./MealTemplates";
 import AppointmentCalendar from "./AppointmentCalendar";
+import DashboardStats from "./DashboardStats";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,49 +85,18 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
           </Button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Patients</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{patients.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Active: {patients.filter(p => p.status === 'active').length}
-              </p>
-            </CardContent>
-          </Card>
+        <DashboardStats
+          userId={userId}
+          totalPatients={patients.length}
+          activePatients={patients.filter(p => p.status === 'active').length}
+        />
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Appointments</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Today</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Messages</CardTitle>
-              <MessageSquare className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Unread</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="patients" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="patients">Patients</TabsTrigger>
-            <TabsTrigger value="recipes">Recipes</TabsTrigger>
-            <TabsTrigger value="templates">Templates</TabsTrigger>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
+        <Tabs defaultValue="patients" className="w-full mt-8">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+            <TabsTrigger value="patients" className="text-xs sm:text-sm">Patients</TabsTrigger>
+            <TabsTrigger value="recipes" className="text-xs sm:text-sm">Recipes</TabsTrigger>
+            <TabsTrigger value="templates" className="text-xs sm:text-sm">Templates</TabsTrigger>
+            <TabsTrigger value="appointments" className="text-xs sm:text-sm">Appointments</TabsTrigger>
           </TabsList>
 
           <TabsContent value="patients" className="mt-6">
@@ -159,21 +129,22 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
                     <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No patients yet. Add your first patient to get started!</p>
                   </div>
-                ) : (
+                 ) : (
                   <div className="space-y-4">
                     {filteredPatients.map((patient) => (
                       <div
                         key={patient.id}
-                        className="flex items-center justify-between p-4 border rounded-lg"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-4 border rounded-lg"
                       >
-                        <div>
-                          <p className="font-medium">{patient.profiles.full_name}</p>
-                          <p className="text-sm text-muted-foreground">{patient.profiles.email}</p>
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{patient.profiles.full_name}</p>
+                          <p className="text-sm text-muted-foreground truncate">{patient.profiles.email}</p>
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => navigate(`/patient/${patient.id}`)}
+                          className="w-full sm:w-auto shrink-0"
                         >
                           View Details
                         </Button>

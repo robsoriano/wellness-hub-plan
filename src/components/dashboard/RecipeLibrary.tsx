@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Clock, Users, Flame } from "lucide-react";
+import { Plus, Clock, Users, Flame, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 type Recipe = {
@@ -90,6 +90,33 @@ const RecipeLibrary = () => {
         carbs: 0,
         fats: 0,
       });
+      fetchRecipes();
+    }
+  };
+
+  const duplicateRecipe = async (recipe: Recipe) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase.from("recipes").insert({
+      name: `${recipe.name} (Copy)`,
+      description: recipe.description,
+      instructions: recipe.instructions,
+      prep_time: recipe.prep_time,
+      cook_time: recipe.cook_time,
+      servings: recipe.servings,
+      calories: recipe.calories,
+      protein: recipe.protein,
+      carbs: recipe.carbs,
+      fats: recipe.fats,
+      nutritionist_id: user.id,
+    });
+
+    if (error) {
+      toast.error("Failed to duplicate recipe");
+      console.error(error);
+    } else {
+      toast.success("Recipe duplicated successfully");
       fetchRecipes();
     }
   };
@@ -214,15 +241,15 @@ const RecipeLibrary = () => {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
-          <Card key={recipe.id} className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedRecipe(recipe)}>
-            <CardHeader>
-              <CardTitle>{recipe.name}</CardTitle>
-              <CardDescription>{recipe.description}</CardDescription>
+          <Card key={recipe.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader className="cursor-pointer" onClick={() => setSelectedRecipe(recipe)}>
+              <CardTitle className="text-base sm:text-lg">{recipe.name}</CardTitle>
+              <CardDescription className="line-clamp-2">{recipe.description}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex gap-4 text-sm text-muted-foreground">
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
                   {recipe.prep_time + recipe.cook_time}min
@@ -236,11 +263,23 @@ const RecipeLibrary = () => {
                   {recipe.calories}cal
                 </div>
               </div>
-              <div className="flex gap-2 mt-4">
+              <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">P: {recipe.protein}g</Badge>
                 <Badge variant="secondary">C: {recipe.carbs}g</Badge>
                 <Badge variant="secondary">F: {recipe.fats}g</Badge>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  duplicateRecipe(recipe);
+                }}
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                Duplicate Recipe
+              </Button>
             </CardContent>
           </Card>
         ))}

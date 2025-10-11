@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus, Trash2, Edit } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit, Copy } from "lucide-react";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -89,6 +89,40 @@ const MealPlanDetail = ({ mealPlanId, onBack, onUpdate }: { mealPlanId: string; 
     }
   };
 
+  const copyWeekMeals = async (fromDay: number, toDay: number) => {
+    const mealsToCopy = mealItems.filter(item => item.day_of_week === fromDay);
+    
+    if (mealsToCopy.length === 0) {
+      toast.error("No meals to copy from this day");
+      return;
+    }
+
+    const newMeals = mealsToCopy.map((item) => ({
+      meal_plan_id: mealPlanId,
+      meal_type: item.meal_type,
+      meal_name: item.meal_name,
+      description: item.description,
+      time: item.time,
+      calories: item.calories,
+      protein: item.protein,
+      carbs: item.carbs,
+      fats: item.fats,
+      day_of_week: toDay,
+    }));
+
+    const { error } = await supabase
+      .from("meal_plan_items")
+      .insert(newMeals);
+
+    if (error) {
+      toast.error("Failed to copy meals");
+      console.error(error);
+    } else {
+      toast.success(`Copied ${mealsToCopy.length} meals to ${DAYS[toDay]}`);
+      fetchMealPlan();
+    }
+  };
+
   const dayItems = mealItems.filter(item => item.day_of_week === selectedDay);
 
   if (loading || !mealPlan) {
@@ -107,26 +141,37 @@ const MealPlanDetail = ({ mealPlanId, onBack, onUpdate }: { mealPlanId: string; 
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Meal Plans
           </Button>
-          <div className="flex items-start justify-between">
-            <div>
-              <CardTitle>{mealPlan.title}</CardTitle>
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+            <div className="flex-1">
+              <CardTitle className="text-xl sm:text-2xl">{mealPlan.title}</CardTitle>
               <CardDescription>
                 {format(new Date(mealPlan.start_date), "MMM dd, yyyy")} - {format(new Date(mealPlan.end_date), "MMM dd, yyyy")}
               </CardDescription>
               {mealPlan.description && <p className="mt-2 text-sm">{mealPlan.description}</p>}
             </div>
-            <Button onClick={() => setAddDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Meal
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <CopyWeekDialog
+                selectedDay={selectedDay}
+                onCopyWeek={copyWeekMeals}
+              />
+              <Button onClick={() => setAddDialogOpen(true)} className="w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Meal
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           <Tabs value={selectedDay.toString()} onValueChange={(v) => setSelectedDay(Number(v))}>
-            <TabsList className="grid grid-cols-7 w-full">
+            <TabsList className="grid grid-cols-7 w-full overflow-x-auto">
               {DAYS.map((day, index) => (
-                <TabsTrigger key={index} value={index.toString()}>
-                  {day.slice(0, 3)}
+                <TabsTrigger 
+                  key={index} 
+                  value={index.toString()}
+                  className="text-xs sm:text-sm px-2 sm:px-3"
+                >
+                  <span className="hidden sm:inline">{day.slice(0, 3)}</span>
+                  <span className="sm:hidden">{day.slice(0, 1)}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -364,6 +409,64 @@ const AddMealItemDialog = ({
             </Button>
           </div>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const CopyWeekDialog = ({
+  selectedDay,
+  onCopyWeek,
+}: {
+  selectedDay: number;
+  onCopyWeek: (fromDay: number, toDay: number) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [targetDay, setTargetDay] = useState<number>(0);
+
+  const handleCopy = () => {
+    onCopyWeek(selectedDay, targetDay);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <Button variant="outline" onClick={() => setOpen(true)} className="w-full sm:w-auto">
+        <Copy className="h-4 w-4 mr-2" />
+        Copy Day
+      </Button>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Copy {DAYS[selectedDay]}'s Meals</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Copy all meals from {DAYS[selectedDay]} to another day
+          </p>
+          <div className="space-y-2">
+            <Label>Copy to:</Label>
+            <Select value={targetDay.toString()} onValueChange={(v) => setTargetDay(Number(v))}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {DAYS.map((day, index) => (
+                  <SelectItem key={index} value={index.toString()} disabled={index === selectedDay}>
+                    {day}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCopy}>
+              Copy Meals
+            </Button>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
