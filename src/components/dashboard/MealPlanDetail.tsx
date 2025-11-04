@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ApplyTemplateDialog from "./ApplyTemplateDialog";
+import SaveAsTemplateDialog from "./SaveAsTemplateDialog";
 
 type MealPlan = {
   id: string;
@@ -41,6 +43,8 @@ const MealPlanDetail = ({ mealPlanId, onBack, onUpdate }: { mealPlanId: string; 
   const [mealItems, setMealItems] = useState<MealPlanItem[]>([]);
   const [selectedDay, setSelectedDay] = useState(0);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [applyTemplateOpen, setApplyTemplateOpen] = useState(false);
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchMealPlan = async () => {
@@ -150,6 +154,22 @@ const MealPlanDetail = ({ mealPlanId, onBack, onUpdate }: { mealPlanId: string; 
               {mealPlan.description && <p className="mt-2 text-sm">{mealPlan.description}</p>}
             </div>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                onClick={() => setApplyTemplateOpen(true)} 
+                className="w-full sm:w-auto"
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                Apply Template
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setSaveTemplateOpen(true)} 
+                className="w-full sm:w-auto"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Save as Template
+              </Button>
               <CopyWeekDialog
                 selectedDay={selectedDay}
                 onCopyWeek={copyWeekMeals}
@@ -225,6 +245,20 @@ const MealPlanDetail = ({ mealPlanId, onBack, onUpdate }: { mealPlanId: string; 
         mealPlanId={mealPlanId}
         selectedDay={selectedDay}
         onMealAdded={fetchMealPlan}
+      />
+
+      <ApplyTemplateDialog
+        open={applyTemplateOpen}
+        onOpenChange={setApplyTemplateOpen}
+        mealPlanId={mealPlanId}
+        onSuccess={fetchMealPlan}
+      />
+
+      <SaveAsTemplateDialog
+        open={saveTemplateOpen}
+        onOpenChange={setSaveTemplateOpen}
+        mealPlanId={mealPlanId}
+        sourceDay={selectedDay}
       />
     </>
   );

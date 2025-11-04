@@ -160,6 +160,56 @@ export type Database = {
           },
         ]
       }
+      meal_template_items: {
+        Row: {
+          calories: number | null
+          carbs: number | null
+          created_at: string | null
+          description: string | null
+          fats: number | null
+          id: string
+          meal_name: string
+          meal_template_id: string
+          meal_type: string
+          protein: number | null
+          time: string | null
+        }
+        Insert: {
+          calories?: number | null
+          carbs?: number | null
+          created_at?: string | null
+          description?: string | null
+          fats?: number | null
+          id?: string
+          meal_name: string
+          meal_template_id: string
+          meal_type: string
+          protein?: number | null
+          time?: string | null
+        }
+        Update: {
+          calories?: number | null
+          carbs?: number | null
+          created_at?: string | null
+          description?: string | null
+          fats?: number | null
+          id?: string
+          meal_name?: string
+          meal_template_id?: string
+          meal_type?: string
+          protein?: number | null
+          time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_template_items_meal_template_id_fkey"
+            columns: ["meal_template_id"]
+            isOneToOne: false
+            referencedRelation: "meal_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meal_templates: {
         Row: {
           category: string | null
