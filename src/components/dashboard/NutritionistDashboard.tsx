@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 import DashboardNav from "./DashboardNav";
 import AddPatientDialog from "./AddPatientDialog";
 import RecipeLibrary from "./RecipeLibrary";
@@ -33,6 +34,7 @@ type PatientData = {
 
 const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [patients, setPatients] = useState<PatientData[]>([]);
   const [loading, setLoading] = useState(true);
   const [addPatientOpen, setAddPatientOpen] = useState(false);
@@ -77,9 +79,9 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Nutritionist Dashboard
+              {t('dashboard.title')}
             </h1>
-            <p className="text-muted-foreground text-lg">Manage your patients and meal plans</p>
+            <p className="text-muted-foreground text-lg">{t('dashboard.subtitle')}</p>
           </div>
           <Button 
             onClick={() => setAddPatientOpen(true)} 
@@ -87,7 +89,7 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
             className="bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all"
           >
             <Plus className="h-5 w-5 mr-2" />
-            Add Patient
+            {t('dashboard.addPatient')}
           </Button>
         </div>
 
@@ -103,40 +105,40 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
               value="patients" 
               className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
             >
-              Patients
+              {t('tabs.patients')}
             </TabsTrigger>
             <TabsTrigger 
               value="recipes" 
               className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
             >
-              Recipes
+              {t('tabs.recipes')}
             </TabsTrigger>
             <TabsTrigger 
               value="templates" 
               className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
             >
-              Templates
+              {t('tabs.templates')}
             </TabsTrigger>
             <TabsTrigger 
               value="appointments" 
               className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
             >
-              Appointments
+              {t('tabs.appointments')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="patients">
             <Card className="border-2">
               <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl">Your Patients</CardTitle>
-                <CardDescription className="text-base">View and manage your patient list</CardDescription>
+                <CardTitle className="text-2xl">{t('patients.title')}</CardTitle>
+                <CardDescription className="text-base">{t('patients.subtitle')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {patients.length > 0 && (
                   <div className="relative mb-4">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search patients by name or email..."
+                      placeholder={t('patients.search')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-9"
@@ -144,16 +146,16 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
                   </div>
                 )}
                 {loading ? (
-                  <p>Loading patients...</p>
+                  <p>{t('common.loading')}</p>
                 ) : filteredPatients.length === 0 && searchQuery ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No patients found matching "{searchQuery}"</p>
+                    <p>{t('patients.noResults')} "{searchQuery}"</p>
                   </div>
                 ) : patients.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No patients yet. Add your first patient to get started!</p>
+                    <p>{t('patients.empty')}</p>
                   </div>
                  ) : (
                   <div className="space-y-4">
@@ -172,7 +174,7 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
                            onClick={() => navigate(`/patient/${patient.id}`)}
                            className="w-full sm:w-auto shrink-0 border-primary/20 hover:border-primary hover:bg-primary/5 font-medium"
                          >
-                           View Details
+                           {t('patients.viewDetails')}
                          </Button>
                        </div>
                     ))}

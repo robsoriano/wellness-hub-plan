@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Calendar, MessageSquare } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type DashboardStatsProps = {
   userId: string;
@@ -10,6 +11,7 @@ type DashboardStatsProps = {
 };
 
 const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStatsProps) => {
+  const { t } = useLanguage();
   const [todayAppointments, setTodayAppointments] = useState(0);
   const [upcomingAppointments, setUpcomingAppointments] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
@@ -63,7 +65,7 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
           <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-primary transition-colors">
-            Total Patients
+            {t('stats.totalPatients')}
           </CardTitle>
           <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-all">
             <Users className="h-4 w-4 text-primary" />
@@ -72,7 +74,7 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
         <CardContent className="relative">
           <div className="text-3xl font-bold tracking-tight">{totalPatients}</div>
           <p className="text-sm text-muted-foreground mt-1 font-medium">
-            <span className="text-primary">{activePatients}</span> active
+            <span className="text-primary">{activePatients}</span> {t('stats.active')}
           </p>
         </CardContent>
       </Card>
@@ -81,7 +83,7 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
         <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
           <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-secondary transition-colors">
-            Appointments
+            {t('stats.appointments')}
           </CardTitle>
           <div className="p-2 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-all">
             <Calendar className="h-4 w-4 text-secondary" />
@@ -90,7 +92,7 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
         <CardContent className="relative">
           <div className="text-3xl font-bold tracking-tight">{todayAppointments}</div>
           <p className="text-sm text-muted-foreground mt-1 font-medium">
-            <span className="text-secondary">{upcomingAppointments}</span> upcoming this week
+            <span className="text-secondary">{upcomingAppointments}</span> {t('stats.upcomingWeek')}
           </p>
         </CardContent>
       </Card>
@@ -99,7 +101,7 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
           <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-accent transition-colors">
-            Messages
+            {t('stats.messages')}
           </CardTitle>
           <div className="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-all">
             <MessageSquare className="h-4 w-4 text-accent" />
@@ -107,7 +109,7 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
         </CardHeader>
         <CardContent className="relative">
           <div className="text-3xl font-bold tracking-tight">{unreadMessages}</div>
-          <p className="text-sm text-muted-foreground mt-1 font-medium">Unread messages</p>
+          <p className="text-sm text-muted-foreground mt-1 font-medium">{t('stats.unread')}</p>
         </CardContent>
       </Card>
     </div>

@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Apple, LogOut, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import NotificationBell from "./NotificationBell";
+import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type DashboardNavProps = {
   userName: string;
@@ -11,6 +14,7 @@ type DashboardNavProps = {
 
 const DashboardNav = ({ userName }: DashboardNavProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -29,8 +33,12 @@ const DashboardNav = ({ userName }: DashboardNavProps) => {
             NutriTrack
           </span>
         </div>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <span className="hidden md:inline text-sm text-muted-foreground font-medium">Welcome, {userName}</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="hidden md:inline text-sm text-muted-foreground font-medium">
+            {t('nav.welcome')}, {userName}
+          </span>
+          <ThemeToggle />
+          <LanguageToggle />
           <NotificationBell />
           <Button 
             variant="ghost" 
@@ -39,7 +47,7 @@ const DashboardNav = ({ userName }: DashboardNavProps) => {
             className="hidden sm:flex hover:bg-secondary/10 hover:text-secondary transition-colors"
           >
             <MessageSquare className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Messages</span>
+            <span className="hidden sm:inline">{t('nav.messages')}</span>
           </Button>
           <Button 
             variant="ghost" 
@@ -56,7 +64,7 @@ const DashboardNav = ({ userName }: DashboardNavProps) => {
             className="hidden sm:flex border-border hover:border-accent hover:text-accent transition-all"
           >
             <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
+            {t('nav.signOut')}
           </Button>
           <Button 
             variant="outline" 
