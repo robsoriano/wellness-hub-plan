@@ -175,29 +175,32 @@ const MealTemplates = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {templates.map((template) => (
-          <Card key={template.id}>
-            <CardHeader>
+          <Card key={template.id} className="group border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-lg overflow-hidden">
+            <CardHeader className="space-y-3">
               <div className="flex items-start justify-between">
-                <FileText className="h-5 w-5 text-muted-foreground" />
-                <Badge variant="secondary" className="capitalize">{template.category}</Badge>
+                <div className="p-2 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:from-primary/20 group-hover:to-secondary/20 transition-all">
+                  <FileText className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="secondary" className="capitalize bg-secondary/10 text-secondary border-secondary/20">
+                  {template.category}
+                </Badge>
               </div>
-              <CardTitle className="mt-2">{template.name}</CardTitle>
-              <CardDescription>{template.description}</CardDescription>
+              <CardTitle className="mt-2 group-hover:text-primary transition-colors">{template.name}</CardTitle>
+              <CardDescription className="line-clamp-2">{template.description}</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2 bg-muted/30 pt-4">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full"
+                className="w-full border-primary/20 hover:border-primary hover:bg-primary/5 transition-all"
                 onClick={() => handleViewTemplate(template.id)}
               >
                 <Eye className="h-4 w-4 mr-2" />
                 View Details
               </Button>
               <Button 
-                variant="outline" 
                 size="sm" 
-                className="w-full"
+                className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-md transition-all"
                 onClick={() => handleEditTemplate(template.id)}
               >
                 <Edit className="h-4 w-4 mr-2" />

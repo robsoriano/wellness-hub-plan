@@ -19,27 +19,51 @@ const DashboardNav = ({ userName }: DashboardNavProps) => {
   };
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <nav className="border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm">
       <div className="container flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <Apple className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-          <span className="font-bold text-base sm:text-lg">NutriTrack</span>
+        <div className="flex items-center gap-2 group">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-secondary transition-transform group-hover:scale-105">
+            <Apple className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
+          </div>
+          <span className="font-bold text-base sm:text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            NutriTrack
+          </span>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <span className="hidden md:inline text-sm text-muted-foreground">Welcome, {userName}</span>
+          <span className="hidden md:inline text-sm text-muted-foreground font-medium">Welcome, {userName}</span>
           <NotificationBell />
-          <Button variant="ghost" size="sm" onClick={() => navigate("/messages")} className="hidden sm:flex">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate("/messages")} 
+            className="hidden sm:flex hover:bg-secondary/10 hover:text-secondary transition-colors"
+          >
             <MessageSquare className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Messages</span>
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => navigate("/messages")} className="sm:hidden">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate("/messages")} 
+            className="sm:hidden hover:bg-secondary/10 hover:text-secondary transition-colors"
+          >
             <MessageSquare className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={handleSignOut} className="hidden sm:flex">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleSignOut} 
+            className="hidden sm:flex border-border hover:border-accent hover:text-accent transition-all"
+          >
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out
           </Button>
-          <Button variant="outline" size="icon" onClick={handleSignOut} className="sm:hidden">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={handleSignOut} 
+            className="sm:hidden border-border hover:border-accent hover:text-accent transition-all"
+          >
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
