@@ -59,40 +59,55 @@ const DashboardStats = ({ userId, totalPatients, activePatients }: DashboardStat
 
   return (
     <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Patients</CardTitle>
-          <Users className="h-4 w-4 text-muted-foreground" />
+      <Card className="group border-2 hover:border-primary/50 transition-all duration-300 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+          <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-primary transition-colors">
+            Total Patients
+          </CardTitle>
+          <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-all">
+            <Users className="h-4 w-4 text-primary" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalPatients}</div>
-          <p className="text-xs text-muted-foreground">
-            Active: {activePatients}
+        <CardContent className="relative">
+          <div className="text-3xl font-bold tracking-tight">{totalPatients}</div>
+          <p className="text-sm text-muted-foreground mt-1 font-medium">
+            <span className="text-primary">{activePatients}</span> active
           </p>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Appointments</CardTitle>
-          <Calendar className="h-4 w-4 text-muted-foreground" />
+      <Card className="group border-2 hover:border-secondary/50 transition-all duration-300 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+          <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-secondary transition-colors">
+            Appointments
+          </CardTitle>
+          <div className="p-2 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-all">
+            <Calendar className="h-4 w-4 text-secondary" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{todayAppointments}</div>
-          <p className="text-xs text-muted-foreground">
-            {upcomingAppointments} upcoming this week
+        <CardContent className="relative">
+          <div className="text-3xl font-bold tracking-tight">{todayAppointments}</div>
+          <p className="text-sm text-muted-foreground mt-1 font-medium">
+            <span className="text-secondary">{upcomingAppointments}</span> upcoming this week
           </p>
         </CardContent>
       </Card>
 
-      <Card className="sm:col-span-2 lg:col-span-1">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Messages</CardTitle>
-          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+      <Card className="group sm:col-span-2 lg:col-span-1 border-2 hover:border-accent/50 transition-all duration-300 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+          <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-accent transition-colors">
+            Messages
+          </CardTitle>
+          <div className="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-all">
+            <MessageSquare className="h-4 w-4 text-accent" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{unreadMessages}</div>
-          <p className="text-xs text-muted-foreground">Unread messages</p>
+        <CardContent className="relative">
+          <div className="text-3xl font-bold tracking-tight">{unreadMessages}</div>
+          <p className="text-sm text-muted-foreground mt-1 font-medium">Unread messages</p>
         </CardContent>
       </Card>
     </div>

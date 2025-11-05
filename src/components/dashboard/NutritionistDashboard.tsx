@@ -73,14 +73,20 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
     <div className="min-h-screen bg-background">
       <DashboardNav userName={profile.full_name} />
       
-      <div className="container py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Nutritionist Dashboard</h1>
-            <p className="text-muted-foreground">Manage your patients and meal plans</p>
+      <div className="container py-8 space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Nutritionist Dashboard
+            </h1>
+            <p className="text-muted-foreground text-lg">Manage your patients and meal plans</p>
           </div>
-          <Button onClick={() => setAddPatientOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+          <Button 
+            onClick={() => setAddPatientOpen(true)} 
+            size="lg"
+            className="bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all"
+          >
+            <Plus className="h-5 w-5 mr-2" />
             Add Patient
           </Button>
         </div>
@@ -91,19 +97,39 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
           activePatients={patients.filter(p => p.status === 'active').length}
         />
 
-        <Tabs defaultValue="patients" className="w-full mt-8">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
-            <TabsTrigger value="patients" className="text-xs sm:text-sm">Patients</TabsTrigger>
-            <TabsTrigger value="recipes" className="text-xs sm:text-sm">Recipes</TabsTrigger>
-            <TabsTrigger value="templates" className="text-xs sm:text-sm">Templates</TabsTrigger>
-            <TabsTrigger value="appointments" className="text-xs sm:text-sm">Appointments</TabsTrigger>
+        <Tabs defaultValue="patients" className="w-full space-y-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 p-1 bg-muted/50 h-auto">
+            <TabsTrigger 
+              value="patients" 
+              className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
+            >
+              Patients
+            </TabsTrigger>
+            <TabsTrigger 
+              value="recipes" 
+              className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
+            >
+              Recipes
+            </TabsTrigger>
+            <TabsTrigger 
+              value="templates" 
+              className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
+            >
+              Templates
+            </TabsTrigger>
+            <TabsTrigger 
+              value="appointments" 
+              className="text-xs sm:text-sm font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm py-2.5"
+            >
+              Appointments
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="patients" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Patients</CardTitle>
-                <CardDescription>View and manage your patient list</CardDescription>
+          <TabsContent value="patients">
+            <Card className="border-2">
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-2xl">Your Patients</CardTitle>
+                <CardDescription className="text-base">View and manage your patient list</CardDescription>
               </CardHeader>
               <CardContent>
                 {patients.length > 0 && (
@@ -131,24 +157,24 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
                   </div>
                  ) : (
                   <div className="space-y-4">
-                    {filteredPatients.map((patient) => (
-                      <div
-                        key={patient.id}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-4 border rounded-lg"
-                      >
-                        <div className="min-w-0">
-                          <p className="font-medium truncate">{patient.profiles.full_name}</p>
-                          <p className="text-sm text-muted-foreground truncate">{patient.profiles.email}</p>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => navigate(`/patient/${patient.id}`)}
-                          className="w-full sm:w-auto shrink-0"
-                        >
-                          View Details
-                        </Button>
-                      </div>
+                     {filteredPatients.map((patient) => (
+                       <div
+                         key={patient.id}
+                         className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-2 rounded-lg hover:border-primary/50 hover:shadow-md transition-all duration-300 group"
+                       >
+                         <div className="min-w-0 space-y-1">
+                           <p className="font-semibold text-lg truncate group-hover:text-primary transition-colors">{patient.profiles.full_name}</p>
+                           <p className="text-sm text-muted-foreground truncate">{patient.profiles.email}</p>
+                         </div>
+                         <Button
+                           variant="outline"
+                           size="sm"
+                           onClick={() => navigate(`/patient/${patient.id}`)}
+                           className="w-full sm:w-auto shrink-0 border-primary/20 hover:border-primary hover:bg-primary/5 font-medium"
+                         >
+                           View Details
+                         </Button>
+                       </div>
                     ))}
                   </div>
                 )}
@@ -156,15 +182,15 @@ const NutritionistDashboard = ({ profile, userId }: NutritionistDashboardProps) 
             </Card>
           </TabsContent>
 
-          <TabsContent value="recipes" className="mt-6">
+          <TabsContent value="recipes">
             <RecipeLibrary />
           </TabsContent>
 
-          <TabsContent value="templates" className="mt-6">
+          <TabsContent value="templates">
             <MealTemplates />
           </TabsContent>
 
-          <TabsContent value="appointments" className="mt-6">
+          <TabsContent value="appointments">
             <AppointmentCalendar userRole="nutritionist" userId={userId} />
           </TabsContent>
         </Tabs>
