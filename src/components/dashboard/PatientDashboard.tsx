@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, TrendingUp, Apple, MessageSquare, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type PatientDashboardProps = {
   profile: {
@@ -48,6 +49,7 @@ type PatientData = {
 
 const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
   const [selectedMealPlan, setSelectedMealPlan] = useState<string | null>(null);
   const [progressLogs, setProgressLogs] = useState<ProgressLog[]>([]);
@@ -169,98 +171,112 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
     <div className="min-h-screen bg-background">
       <DashboardNav userName={profile.full_name} />
       
-      <div className="container py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">My Dashboard</h1>
-          <p className="text-muted-foreground">Track your nutrition journey</p>
+      <div className="container py-6 sm:py-8 px-4">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+            {t('patientDashboard.title')}
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base">{t('patientDashboard.subtitle')}</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Weight</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-4 mb-6 sm:mb-8">
+          <Card className="group border-2 hover:border-primary/50 transition-all duration-300 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-muted-foreground group-hover:text-primary transition-colors">
+                {t('patientDashboard.currentWeight')}
+              </CardTitle>
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
+            <CardContent className="relative p-4 sm:p-6 pt-0">
+              <div className="text-xl sm:text-2xl font-bold tracking-tight">
                 {patientData?.weight ? `${patientData.weight} kg` : "--"}
               </div>
-              <p className="text-xs text-muted-foreground">
-                {patientData?.bmi ? `BMI: ${patientData.bmi}` : "No data"}
+              <p className="text-xs text-muted-foreground mt-1">
+                {patientData?.bmi ? `${t('patientDashboard.bmi')}: ${patientData.bmi}` : t('patientDashboard.noData')}
               </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+          <Card className="group border-2 hover:border-secondary/50 transition-all duration-300 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-muted-foreground group-hover:text-secondary transition-colors">
+                {t('patientDashboard.currentStreak')}
+              </CardTitle>
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{streak}</div>
-              <p className="text-xs text-muted-foreground">Days logging</p>
+            <CardContent className="relative p-4 sm:p-6 pt-0">
+              <div className="text-xl sm:text-2xl font-bold tracking-tight">{streak}</div>
+              <p className="text-xs text-muted-foreground mt-1">{t('patientDashboard.daysLogging')}</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Plans</CardTitle>
-              <Apple className="h-4 w-4 text-muted-foreground" />
+          <Card className="group border-2 hover:border-accent/50 transition-all duration-300 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-muted-foreground group-hover:text-accent transition-colors">
+                {t('patientDashboard.activePlans')}
+              </CardTitle>
+              <Apple className="h-3 w-3 sm:h-4 sm:w-4 text-accent" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mealPlans.length}</div>
-              <p className="text-xs text-muted-foreground">Meal plans</p>
+            <CardContent className="relative p-4 sm:p-6 pt-0">
+              <div className="text-xl sm:text-2xl font-bold tracking-tight">{mealPlans.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">{t('patientDashboard.mealPlans')}</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Profile</CardTitle>
-              <User className="h-4 w-4 text-muted-foreground" />
+          <Card className="group border-2 hover:border-primary/50 transition-all duration-300 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-muted-foreground group-hover:text-primary transition-colors">
+                {t('patientDashboard.profile')}
+              </CardTitle>
+              <User className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative p-4 sm:p-6 pt-0">
               <Button 
                 size="sm" 
                 variant="outline" 
-                className="w-full"
+                className="w-full text-xs"
                 onClick={() => navigate("/profile")}
               >
-                View Profile
+                {t('patientDashboard.viewProfile')}
               </Button>
             </CardContent>
           </Card>
         </div>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="progress">Progress</TabsTrigger>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">{t('patientDashboard.overview')}</TabsTrigger>
+            <TabsTrigger value="progress" className="text-xs sm:text-sm">{t('patientDashboard.progress')}</TabsTrigger>
+            <TabsTrigger value="appointments" className="text-xs sm:text-sm">{t('patientDashboard.appointments')}</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-6">
+          <TabsContent value="overview" className="mt-0">
             <div className="grid gap-6 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>Active Meal Plans</CardTitle>
-                  <CardDescription>Your current nutrition plans</CardDescription>
+                  <CardTitle className="text-lg sm:text-xl">{t('patientDashboard.activeMealPlans')}</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">{t('patientDashboard.currentPlans')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <p>Loading meal plans...</p>
+                    <p className="text-sm">Loading...</p>
                   ) : mealPlans.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
                       <Apple className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No active meal plans yet.</p>
-                      <p className="text-sm">Your nutritionist will create one for you soon!</p>
+                      <p className="text-sm">{t('patientDashboard.noPlansYet')}</p>
+                      <p className="text-xs mt-2">{t('patientDashboard.nutritionistWillCreate')}</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {mealPlans.map((plan) => (
-                        <div key={plan.id} className="p-4 border rounded-lg">
-                          <h3 className="font-medium mb-1">{plan.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
-                          <div className="flex justify-between items-center">
+                        <div key={plan.id} className="p-4 border rounded-lg hover:border-primary/50 transition-all">
+                          <h3 className="font-medium mb-1 text-sm sm:text-base">{plan.title}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-2">{plan.description}</p>
+                          <div className="flex justify-between items-center flex-wrap gap-2">
                             <span className="text-xs text-muted-foreground">
                               {new Date(plan.start_date).toLocaleDateString()} - {new Date(plan.end_date).toLocaleDateString()}
                             </span>
@@ -268,8 +284,9 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
                               size="sm" 
                               variant="outline"
                               onClick={() => handleViewMealPlan(plan.id)}
+                              className="text-xs"
                             >
-                              View Details
+                              {t('patientDashboard.viewDetails')}
                             </Button>
                           </div>
                         </div>
@@ -281,34 +298,35 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Progress</CardTitle>
-                  <CardDescription>Your latest health updates</CardDescription>
+                  <CardTitle className="text-lg sm:text-xl">{t('patientDashboard.recentProgress')}</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">{t('patientDashboard.latestUpdates')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {recentLogs.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
                       <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No progress logs yet.</p>
+                      <p className="text-sm">{t('patientDashboard.noProgressYet')}</p>
                       <Button 
                         className="mt-4" 
                         size="sm"
                         onClick={() => setProgressDialogOpen(true)}
                       >
-                        Log Today's Progress
+                        {t('patientDashboard.logTodayProgress')}
                       </Button>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       <Button 
                         className="w-full mb-4" 
+                        size="sm"
                         onClick={() => setProgressDialogOpen(true)}
                       >
-                        Log Today's Progress
+                        {t('patientDashboard.logTodayProgress')}
                       </Button>
                       {recentLogs.map((log) => (
-                        <div key={log.id} className="p-4 border rounded-lg">
+                        <div key={log.id} className="p-4 border rounded-lg hover:border-secondary/50 transition-all">
                           <div className="flex justify-between items-start mb-2">
-                            <span className="font-medium">
+                            <span className="font-medium text-sm">
                               {new Date(log.log_date).toLocaleDateString()}
                             </span>
                             {log.weight && (
@@ -317,12 +335,12 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
                               </span>
                             )}
                           </div>
-                          <div className="text-sm text-muted-foreground space-y-1">
+                          <div className="text-xs sm:text-sm text-muted-foreground space-y-1">
                             {log.energy_level && (
-                              <p>Energy: {log.energy_level}/10</p>
+                              <p>{t('patientDashboard.energy')}: {log.energy_level}/10</p>
                             )}
                             {log.mood && (
-                              <p>Mood: {log.mood}</p>
+                              <p>{t('patientDashboard.mood')}: {log.mood}</p>
                             )}
                             {log.notes && (
                               <p className="text-xs mt-2">{log.notes}</p>
@@ -337,11 +355,11 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
             </div>
           </TabsContent>
 
-          <TabsContent value="progress" className="mt-6">
+          <TabsContent value="progress" className="mt-0">
             <GoalProgress patientId={userId} />
           </TabsContent>
 
-          <TabsContent value="appointments" className="mt-6">
+          <TabsContent value="appointments" className="mt-0">
             <AppointmentCalendar userRole="patient" userId={userId} />
           </TabsContent>
         </Tabs>

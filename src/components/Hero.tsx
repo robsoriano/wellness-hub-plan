@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Activity, Calendar } from "lucide-react";
 import heroImage from "@/assets/hero-nutrition.jpg";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Hero = () => {
+  const { t } = useLanguage();
+  
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5 pt-20 pb-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,29 +14,28 @@ const Hero = () => {
             <div className="inline-block">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
                 <Activity className="w-4 h-4 mr-2" />
-                Professional Nutrition Coaching
+                {t('hero.badge')}
               </span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-              Personalized Nutrition,{" "}
+              {t('hero.title')}{" "}
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Simplified
+                {t('hero.titleHighlight')}
               </span>
             </h1>
             
             <p className="text-lg text-muted-foreground max-w-xl">
-              NutriTrack bridges the gap between nutritionists and patients with tailored diet plans, 
-              progress tracking, and seamless communication — all in one intuitive platform.
+              {t('hero.description')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                Start Free Trial
+                {t('hero.startTrial')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button size="lg" variant="outline">
-                Watch Demo
+                {t('hero.watchDemo')}
               </Button>
             </div>
 
@@ -44,7 +46,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">500+</p>
-                  <p className="text-sm text-muted-foreground">Nutritionists</p>
+                  <p className="text-sm text-muted-foreground">{t('hero.nutritionists')}</p>
                 </div>
               </div>
               
@@ -54,7 +56,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">10k+</p>
-                  <p className="text-sm text-muted-foreground">Active Users</p>
+                  <p className="text-sm text-muted-foreground">{t('hero.activeUsers')}</p>
                 </div>
               </div>
               
@@ -64,7 +66,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">95%</p>
-                  <p className="text-sm text-muted-foreground">Success Rate</p>
+                  <p className="text-sm text-muted-foreground">{t('hero.successRate')}</p>
                 </div>
               </div>
             </div>

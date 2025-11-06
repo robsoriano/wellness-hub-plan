@@ -9,11 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { Apple } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
 
 type UserRole = "nutritionist" | "patient";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +35,7 @@ const Auth = () => {
       });
 
       if (error) throw error;
-      toast.success("Signed in successfully!");
+      toast.success(t('auth.signedIn'));
       navigate("/dashboard");
     } catch (error: any) {
       toast.error(error.message);
@@ -58,7 +62,7 @@ const Auth = () => {
       });
 
       if (error) throw error;
-      toast.success("Account created! Please sign in.");
+      toast.success(t('auth.accountCreated'));
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -68,25 +72,29 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
+      <div className="absolute top-4 right-4 flex gap-2">
+        <ThemeToggle />
+        <LanguageToggle />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-2">
             <Apple className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome to NutriTrack</CardTitle>
-          <CardDescription>Sign in or create an account to get started</CardDescription>
+          <CardTitle className="text-2xl font-bold">{t('auth.welcome')}</CardTitle>
+          <CardDescription>{t('auth.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin">{t('auth.signIn')}</TabsTrigger>
+              <TabsTrigger value="signup">{t('auth.signUp')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+                  <Label htmlFor="signin-email">{t('auth.email')}</Label>
                   <Input
                     id="signin-email"
                     type="email"
@@ -97,7 +105,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                  <Label htmlFor="signin-password">{t('auth.password')}</Label>
                   <Input
                     id="signin-password"
                     type="password"
@@ -107,7 +115,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Signing in..." : "Sign In"}
+                  {loading ? t('auth.signingIn') : t('auth.signIn')}
                 </Button>
               </form>
             </TabsContent>
@@ -115,7 +123,7 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
+                  <Label htmlFor="signup-name">{t('auth.fullName')}</Label>
                   <Input
                     id="signup-name"
                     type="text"
@@ -126,7 +134,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email">{t('auth.email')}</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -137,7 +145,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password">{t('auth.password')}</Label>
                   <Input
                     id="signup-password"
                     type="password"
@@ -148,20 +156,20 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>I am a:</Label>
+                  <Label>{t('auth.iAm')}</Label>
                   <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="patient" id="patient" />
-                      <Label htmlFor="patient" className="cursor-pointer">Patient</Label>
+                      <Label htmlFor="patient" className="cursor-pointer">{t('auth.patient')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="nutritionist" id="nutritionist" />
-                      <Label htmlFor="nutritionist" className="cursor-pointer">Nutritionist</Label>
+                      <Label htmlFor="nutritionist" className="cursor-pointer">{t('auth.nutritionist')}</Label>
                     </div>
                   </RadioGroup>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Creating account..." : "Create Account"}
+                  {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
                 </Button>
               </form>
             </TabsContent>

@@ -1,43 +1,46 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, ClipboardEdit, TrendingUp, Award } from "lucide-react";
-
-const steps = [
-  {
-    icon: UserPlus,
-    title: "Sign Up",
-    description: "Create your account as a nutritionist or patient in seconds.",
-    step: "01"
-  },
-  {
-    icon: ClipboardEdit,
-    title: "Create Plans",
-    description: "Nutritionists design personalized meal plans based on individual goals.",
-    step: "02"
-  },
-  {
-    icon: TrendingUp,
-    title: "Track Progress",
-    description: "Monitor daily intake, build streaks, and visualize improvements.",
-    step: "03"
-  },
-  {
-    icon: Award,
-    title: "Achieve Goals",
-    description: "Reach health milestones with consistent guidance and support.",
-    step: "04"
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const HowItWorks = () => {
+  const { t } = useLanguage();
+  
+  const steps = [
+    {
+      icon: UserPlus,
+      title: t('howItWorks.step1'),
+      description: t('howItWorks.step1Desc'),
+      step: "01"
+    },
+    {
+      icon: ClipboardEdit,
+      title: t('howItWorks.step2'),
+      description: t('howItWorks.step2Desc'),
+      step: "02"
+    },
+    {
+      icon: TrendingUp,
+      title: t('howItWorks.step3'),
+      description: t('howItWorks.step3Desc'),
+      step: "03"
+    },
+    {
+      icon: Award,
+      title: t('howItWorks.step4'),
+      description: t('howItWorks.step4Desc'),
+      step: "04"
+    }
+  ];
+
   return (
     <section id="how-it-works" className="py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            How NutriTrack Works
+            {t('howItWorks.title')}
           </h2>
           <p className="text-lg text-muted-foreground">
-            Get started with your personalized nutrition journey in four simple steps.
+            {t('howItWorks.description')}
           </p>
         </div>
 

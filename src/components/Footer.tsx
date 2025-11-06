@@ -1,6 +1,9 @@
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
+  const { t } = useLanguage();
+  
   return (
     <footer className="bg-muted/30 border-t border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -10,43 +13,43 @@ const Footer = () => {
               NutriTrack
             </h3>
             <p className="text-sm text-muted-foreground">
-              Empowering nutritionists and patients with personalized nutrition coaching.
+              {t('footer.tagline')}
             </p>
           </div>
           
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Product</h4>
+            <h4 className="font-semibold text-foreground mb-4">{t('footer.product')}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#features" className="hover:text-foreground transition-colors">Features</a></li>
-              <li><a href="#pricing" className="hover:text-foreground transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Demo</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Updates</a></li>
+              <li><a href="#features" className="hover:text-foreground transition-colors">{t('nav.features')}</a></li>
+              <li><a href="#pricing" className="hover:text-foreground transition-colors">{t('nav.pricing')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.demo')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.updates')}</a></li>
             </ul>
           </div>
           
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Resources</h4>
+            <h4 className="font-semibold text-foreground mb-4">{t('footer.resources')}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Community</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.blog')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.helpCenter')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.community')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.contact')}</a></li>
             </ul>
           </div>
           
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Legal</h4>
+            <h4 className="font-semibold text-foreground mb-4">{t('footer.legal')}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Cookie Policy</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.privacy')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.terms')}</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer.cookies')}</a></li>
             </ul>
           </div>
         </div>
         
         <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2025 NutriTrack. All rights reserved.
+            {t('footer.copyright')}
           </p>
           
           <div className="flex gap-4">

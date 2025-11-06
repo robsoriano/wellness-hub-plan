@@ -9,69 +9,71 @@ import {
   BarChart3,
   Utensils
 } from "lucide-react";
-
-const features = [
-  {
-    icon: ClipboardList,
-    title: "Custom Diet Plans",
-    description: "Create and manage personalized meal plans tailored to each patient's needs and goals.",
-    color: "text-primary"
-  },
-  {
-    icon: TrendingUp,
-    title: "Progress Tracking",
-    description: "Visual insights and analytics to monitor patient progress and adjust plans accordingly.",
-    color: "text-secondary"
-  },
-  {
-    icon: MessageSquare,
-    title: "Integrated Messaging",
-    description: "Seamless communication between nutritionists and patients for real-time support.",
-    color: "text-accent"
-  },
-  {
-    icon: Calendar,
-    title: "Smart Scheduling",
-    description: "Streamline check-ins and appointments with built-in scheduling tools.",
-    color: "text-primary"
-  },
-  {
-    icon: Utensils,
-    title: "Recipe Library",
-    description: "Access personalized recipes and meal suggestions based on dietary preferences.",
-    color: "text-secondary"
-  },
-  {
-    icon: Bell,
-    title: "Smart Reminders",
-    description: "Automated notifications to keep patients engaged and on track with their goals.",
-    color: "text-accent"
-  },
-  {
-    icon: BarChart3,
-    title: "Advanced Analytics",
-    description: "Track active vs. inactive users with comprehensive dashboard insights.",
-    color: "text-primary"
-  },
-  {
-    icon: Users,
-    title: "Patient Management",
-    description: "Efficiently manage multiple patients with organized profiles and histories.",
-    color: "text-secondary"
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Features = () => {
+  const { t } = useLanguage();
+  
+  const features = [
+    {
+      icon: ClipboardList,
+      title: t('features.customDiet'),
+      description: t('features.customDietDesc'),
+      color: "text-primary"
+    },
+    {
+      icon: TrendingUp,
+      title: t('features.progressTracking'),
+      description: t('features.progressTrackingDesc'),
+      color: "text-secondary"
+    },
+    {
+      icon: MessageSquare,
+      title: t('features.messaging'),
+      description: t('features.messagingDesc'),
+      color: "text-accent"
+    },
+    {
+      icon: Calendar,
+      title: t('features.scheduling'),
+      description: t('features.schedulingDesc'),
+      color: "text-primary"
+    },
+    {
+      icon: Utensils,
+      title: t('features.recipeLibrary'),
+      description: t('features.recipeLibraryDesc'),
+      color: "text-secondary"
+    },
+    {
+      icon: Bell,
+      title: t('features.reminders'),
+      description: t('features.remindersDesc'),
+      color: "text-accent"
+    },
+    {
+      icon: BarChart3,
+      title: t('features.analytics'),
+      description: t('features.analyticsDesc'),
+      color: "text-primary"
+    },
+    {
+      icon: Users,
+      title: t('features.patientMgmt'),
+      description: t('features.patientMgmtDesc'),
+      color: "text-secondary"
+    }
+  ];
+
   return (
     <section id="features" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Everything You Need in One Platform
+            {t('features.title')}
           </h2>
           <p className="text-lg text-muted-foreground">
-            From diet creation to progress tracking, NutriTrack provides all the tools 
-            nutritionists and patients need for success.
+            {t('features.description')}
           </p>
         </div>
 
