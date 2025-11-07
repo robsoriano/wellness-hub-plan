@@ -64,6 +64,25 @@ const RecipeLibrary = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate inputs
+    if (!formData.name.trim()) {
+      toast.error("Recipe name is required");
+      return;
+    }
+    if (formData.name.length > 200) {
+      toast.error("Recipe name must be less than 200 characters");
+      return;
+    }
+    if (formData.description && formData.description.length > 500) {
+      toast.error("Description must be less than 500 characters");
+      return;
+    }
+    if (formData.instructions && formData.instructions.length > 5000) {
+      toast.error("Instructions must be less than 5000 characters");
+      return;
+    }
+    
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -144,6 +163,7 @@ const RecipeLibrary = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  maxLength={200}
                 />
               </div>
               <div>
@@ -152,6 +172,7 @@ const RecipeLibrary = () => {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  maxLength={500}
                 />
               </div>
               <div>
@@ -161,6 +182,7 @@ const RecipeLibrary = () => {
                   value={formData.instructions}
                   onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
                   rows={6}
+                  maxLength={5000}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">

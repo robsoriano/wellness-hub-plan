@@ -115,7 +115,14 @@ const MessageThread = ({ currentUserId, otherUserId, otherUserName }: MessageThr
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    const trimmedMessage = newMessage.trim();
+    
+    if (!trimmedMessage) return;
+    
+    if (trimmedMessage.length > 2000) {
+      toast.error("Message must be less than 2000 characters");
+      return;
+    }
 
     setSending(true);
     try {
@@ -124,7 +131,7 @@ const MessageThread = ({ currentUserId, otherUserId, otherUserName }: MessageThr
         .insert({
           sender_id: currentUserId,
           receiver_id: otherUserId,
-          message: newMessage.trim(),
+          message: trimmedMessage,
         });
 
       if (error) throw error;
@@ -194,6 +201,7 @@ const MessageThread = ({ currentUserId, otherUserId, otherUserName }: MessageThr
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               disabled={sending}
+              maxLength={2000}
             />
             <Button type="submit" disabled={sending || !newMessage.trim()}>
               {sending ? (
