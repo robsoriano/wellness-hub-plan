@@ -316,6 +316,7 @@ export type Database = {
         Row: {
           activity_level: string | null
           age: number | null
+          allergies: string | null
           bmi: number | null
           body_fat_percentage: number | null
           created_at: string | null
@@ -323,8 +324,10 @@ export type Database = {
           height: number | null
           id: string
           metabolic_age: number | null
+          muscle_percentage: number | null
           notes: string | null
           nutritionist_id: string
+          pathologies: string | null
           patient_id: string
           status: string | null
           target_weight: number | null
@@ -333,6 +336,7 @@ export type Database = {
         Insert: {
           activity_level?: string | null
           age?: number | null
+          allergies?: string | null
           bmi?: number | null
           body_fat_percentage?: number | null
           created_at?: string | null
@@ -340,8 +344,10 @@ export type Database = {
           height?: number | null
           id?: string
           metabolic_age?: number | null
+          muscle_percentage?: number | null
           notes?: string | null
           nutritionist_id: string
+          pathologies?: string | null
           patient_id: string
           status?: string | null
           target_weight?: number | null
@@ -350,6 +356,7 @@ export type Database = {
         Update: {
           activity_level?: string | null
           age?: number | null
+          allergies?: string | null
           bmi?: number | null
           body_fat_percentage?: number | null
           created_at?: string | null
@@ -357,8 +364,10 @@ export type Database = {
           height?: number | null
           id?: string
           metabolic_age?: number | null
+          muscle_percentage?: number | null
           notes?: string | null
           nutritionist_id?: string
+          pathologies?: string | null
           patient_id?: string
           status?: string | null
           target_weight?: number | null

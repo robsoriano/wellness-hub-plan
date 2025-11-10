@@ -17,8 +17,11 @@ const addPatientSchema = z.object({
   weight: z.string().optional(),
   target_weight: z.string().optional(),
   body_fat_percentage: z.string().optional(),
+  muscle_percentage: z.string().optional(),
   metabolic_age: z.string().optional(),
   dietary_restrictions: z.string().trim().max(500, { message: "Dietary restrictions must be less than 500 characters" }).optional(),
+  allergies: z.string().trim().max(500, { message: "Allergies must be less than 500 characters" }).optional(),
+  pathologies: z.string().trim().max(500, { message: "Pathologies must be less than 500 characters" }).optional(),
   activity_level: z.string().optional(),
   notes: z.string().trim().max(500, { message: "Notes must be less than 500 characters" }).optional(),
 });
@@ -32,6 +35,7 @@ type AddPatientDialogProps = {
 
 const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }: AddPatientDialogProps) => {
   const [loading, setLoading] = useState(false);
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [formData, setFormData] = useState({
     email: "",
     age: "",
@@ -39,12 +43,22 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
     weight: "",
     target_weight: "",
     body_fat_percentage: "",
+    muscle_percentage: "",
     metabolic_age: "",
     dietary_restrictions: "",
+    allergies: "",
+    pathologies: "",
     activity_level: "",
     notes: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const convertToKg = (value: number, unit: "kg" | "lbs"): number => {
+    if (unit === "lbs") {
+      return value / 2.20462;
+    }
+    return value;
+  };
 
   const calculateBMI = (weight: number, height: number): number => {
     // BMI = weight (kg) / (height (m))^2
@@ -118,12 +132,17 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
         return;
       }
 
-      // Calculate BMI if both height and weight are provided
+      // Calculate BMI if both height and weight are provided (convert to kg if needed)
       let bmi = null;
-      const weight = formData.weight ? parseFloat(formData.weight) : null;
+      const weightValue = formData.weight ? parseFloat(formData.weight) : null;
+      const targetWeightValue = formData.target_weight ? parseFloat(formData.target_weight) : null;
       const height = formData.height ? parseFloat(formData.height) : null;
-      if (weight && height && height > 0) {
-        bmi = calculateBMI(weight, height);
+      
+      const weightInKg = weightValue ? convertToKg(weightValue, weightUnit) : null;
+      const targetWeightInKg = targetWeightValue ? convertToKg(targetWeightValue, weightUnit) : null;
+      
+      if (weightInKg && height && height > 0) {
+        bmi = calculateBMI(weightInKg, height);
       }
 
       // Create patient record
@@ -133,12 +152,15 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
         status: "active",
         age: formData.age ? parseInt(formData.age) : null,
         height: formData.height ? parseFloat(formData.height) : null,
-        weight: formData.weight ? parseFloat(formData.weight) : null,
-        target_weight: formData.target_weight ? parseFloat(formData.target_weight) : null,
+        weight: weightInKg,
+        target_weight: targetWeightInKg,
         body_fat_percentage: formData.body_fat_percentage ? parseFloat(formData.body_fat_percentage) : null,
+        muscle_percentage: formData.muscle_percentage ? parseFloat(formData.muscle_percentage) : null,
         metabolic_age: formData.metabolic_age ? parseInt(formData.metabolic_age) : null,
         bmi,
         dietary_restrictions: formData.dietary_restrictions || null,
+        allergies: formData.allergies || null,
+        pathologies: formData.pathologies || null,
         activity_level: formData.activity_level || null,
         notes: formData.notes || null,
       });
@@ -158,11 +180,15 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
         weight: "",
         target_weight: "",
         body_fat_percentage: "",
+        muscle_percentage: "",
         metabolic_age: "",
         dietary_restrictions: "",
+        allergies: "",
+        pathologies: "",
         activity_level: "",
         notes: "",
       });
+      setWeightUnit("kg");
 
       onPatientAdded();
       onOpenChange(false);
@@ -232,9 +258,33 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
             </div>
           </div>
 
+          <div className="space-y-2">
+            <div className="flex items-center justify-between mb-2">
+              <Label>Weight Unit</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={weightUnit === "kg" ? "default" : "outline"}
+                  onClick={() => setWeightUnit("kg")}
+                >
+                  KG
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={weightUnit === "lbs" ? "default" : "outline"}
+                  onClick={() => setWeightUnit("lbs")}
+                >
+                  LBS
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
+              <Label htmlFor="weight">Weight ({weightUnit})</Label>
               <Input
                 id="weight"
                 type="number"
@@ -242,12 +292,12 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
                 min="0"
                 value={formData.weight}
                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                placeholder="e.g., 70"
+                placeholder={weightUnit === "kg" ? "e.g., 70" : "e.g., 154"}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="target_weight">Target Weight (kg)</Label>
+              <Label htmlFor="target_weight">Target Weight ({weightUnit})</Label>
               <Input
                 id="target_weight"
                 type="number"
@@ -255,12 +305,12 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
                 min="0"
                 value={formData.target_weight}
                 onChange={(e) => setFormData({ ...formData, target_weight: e.target.value })}
-                placeholder="e.g., 65"
+                placeholder={weightUnit === "kg" ? "e.g., 65" : "e.g., 143"}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="body_fat_percentage">Body Fat %</Label>
               <Input
@@ -272,6 +322,20 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
                 value={formData.body_fat_percentage}
                 onChange={(e) => setFormData({ ...formData, body_fat_percentage: e.target.value })}
                 placeholder="e.g., 22.5"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="muscle_percentage">Muscle %</Label>
+              <Input
+                id="muscle_percentage"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                value={formData.muscle_percentage}
+                onChange={(e) => setFormData({ ...formData, muscle_percentage: e.target.value })}
+                placeholder="e.g., 35.0"
               />
             </div>
 
@@ -309,17 +373,47 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dietary_restrictions">Dietary Restrictions / Allergies</Label>
+            <Label htmlFor="dietary_restrictions">Dietary Restrictions</Label>
             <Textarea
               id="dietary_restrictions"
               value={formData.dietary_restrictions}
               onChange={(e) => setFormData({ ...formData, dietary_restrictions: e.target.value })}
-              placeholder="e.g., Lactose intolerant, vegetarian, nut allergy..."
+              placeholder="e.g., Vegetarian, vegan, low-carb..."
               rows={2}
             />
             {errors.dietary_restrictions && (
               <p className="text-sm text-destructive">{errors.dietary_restrictions}</p>
             )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="allergies">Allergies</Label>
+              <Textarea
+                id="allergies"
+                value={formData.allergies}
+                onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
+                placeholder="e.g., Nuts, shellfish, lactose..."
+                rows={2}
+              />
+              {errors.allergies && (
+                <p className="text-sm text-destructive">{errors.allergies}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="pathologies">Pathologies</Label>
+              <Textarea
+                id="pathologies"
+                value={formData.pathologies}
+                onChange={(e) => setFormData({ ...formData, pathologies: e.target.value })}
+                placeholder="e.g., Diabetes, hypertension..."
+                rows={2}
+              />
+              {errors.pathologies && (
+                <p className="text-sm text-destructive">{errors.pathologies}</p>
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
