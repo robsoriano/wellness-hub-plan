@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Plus, LineChart } from "lucide-react";
 import AddProgressLogDialog from "./AddProgressLogDialog";
+import ProgressCharts from "./ProgressCharts";
 import { format } from "date-fns";
-import { Line, LineChart as RechartsLineChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 type ProgressLog = {
   id: string;
@@ -41,36 +41,10 @@ const ProgressTracking = ({ patientId }: { patientId: string }) => {
     fetchProgressLogs();
   }, [patientId]);
 
-  const chartData = progressLogs
-    .filter(log => log.weight !== null)
-    .reverse()
-    .map(log => ({
-      date: format(new Date(log.log_date), "MMM dd"),
-      weight: log.weight,
-    }));
-
   return (
     <>
       <div className="space-y-6">
-        {chartData.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Weight Progress</CardTitle>
-              <CardDescription>Track weight changes over time</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <RechartsLineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="weight" stroke="hsl(var(--primary))" strokeWidth={2} />
-                </RechartsLineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        )}
+        <ProgressCharts patientId={patientId} />
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
