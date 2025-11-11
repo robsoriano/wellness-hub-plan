@@ -425,31 +425,37 @@ export type Database = {
       }
       progress_logs: {
         Row: {
+          body_fat_percentage: number | null
           created_at: string | null
           energy_level: number | null
           id: string
           log_date: string
           mood: string | null
+          muscle_percentage: number | null
           notes: string | null
           patient_id: string
           weight: number | null
         }
         Insert: {
+          body_fat_percentage?: number | null
           created_at?: string | null
           energy_level?: number | null
           id?: string
           log_date: string
           mood?: string | null
+          muscle_percentage?: number | null
           notes?: string | null
           patient_id: string
           weight?: number | null
         }
         Update: {
+          body_fat_percentage?: number | null
           created_at?: string | null
           energy_level?: number | null
           id?: string
           log_date?: string
           mood?: string | null
+          muscle_percentage?: number | null
           notes?: string | null
           patient_id?: string
           weight?: number | null

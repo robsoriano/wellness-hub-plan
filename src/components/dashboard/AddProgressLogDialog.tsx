@@ -28,6 +28,8 @@ const AddProgressLogDialog = ({
 }: AddProgressLogDialogProps) => {
   const [logDate, setLogDate] = useState<Date>(new Date());
   const [weight, setWeight] = useState("");
+  const [musclePercentage, setMusclePercentage] = useState("");
+  const [bodyFatPercentage, setBodyFatPercentage] = useState("");
   const [energyLevel, setEnergyLevel] = useState([5]);
   const [mood, setMood] = useState("");
   const [notes, setNotes] = useState("");
@@ -47,6 +49,8 @@ const AddProgressLogDialog = ({
       patient_id: patientId,
       log_date: format(logDate, "yyyy-MM-dd"),
       weight: weight ? Number(weight) : null,
+      muscle_percentage: musclePercentage ? Number(musclePercentage) : null,
+      body_fat_percentage: bodyFatPercentage ? Number(bodyFatPercentage) : null,
       energy_level: energyLevel[0],
       mood: mood || null,
       notes: notes || null,
@@ -61,6 +65,8 @@ const AddProgressLogDialog = ({
       toast.success("Progress log added successfully");
       setLogDate(new Date());
       setWeight("");
+      setMusclePercentage("");
+      setBodyFatPercentage("");
       setEnergyLevel([5]);
       setMood("");
       setNotes("");
@@ -114,6 +120,36 @@ const AddProgressLogDialog = ({
               onChange={(e) => setWeight(e.target.value)}
               placeholder="Enter weight"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="musclePercentage">Muscle %</Label>
+              <Input
+                id="musclePercentage"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                value={musclePercentage}
+                onChange={(e) => setMusclePercentage(e.target.value)}
+                placeholder="0-100"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bodyFatPercentage">Body Fat %</Label>
+              <Input
+                id="bodyFatPercentage"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                value={bodyFatPercentage}
+                onChange={(e) => setBodyFatPercentage(e.target.value)}
+                placeholder="0-100"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
