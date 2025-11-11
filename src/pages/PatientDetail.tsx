@@ -21,9 +21,12 @@ type PatientData = {
   weight: number | null;
   target_weight: number | null;
   body_fat_percentage: number | null;
+  muscle_percentage: number | null;
   metabolic_age: number | null;
   bmi: number | null;
   dietary_restrictions: string | null;
+  allergies: string | null;
+  pathologies: string | null;
   activity_level: string | null;
   notes: string | null;
   status: string;

@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Activity, Ruler, Weight, Target } from "lucide-react";
+import { Activity, Ruler, Weight, Target, Dumbbell } from "lucide-react";
 
 type PatientData = {
   id: string;
@@ -18,9 +18,12 @@ type PatientData = {
   weight: number | null;
   target_weight: number | null;
   body_fat_percentage: number | null;
+  muscle_percentage: number | null;
   metabolic_age: number | null;
   bmi: number | null;
   dietary_restrictions: string | null;
+  allergies: string | null;
+  pathologies: string | null;
   activity_level: string | null;
   notes: string | null;
   status: string;
@@ -32,14 +35,18 @@ type PatientData = {
 
 const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate: (patient: PatientData) => void }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [formData, setFormData] = useState({
     age: patient.age || "",
     height: patient.height || "",
     weight: patient.weight || "",
     target_weight: patient.target_weight || "",
     body_fat_percentage: patient.body_fat_percentage || "",
+    muscle_percentage: patient.muscle_percentage || "",
     metabolic_age: patient.metabolic_age || "",
     dietary_restrictions: patient.dietary_restrictions || "",
+    allergies: patient.allergies || "",
+    pathologies: patient.pathologies || "",
     activity_level: patient.activity_level || "",
     notes: patient.notes || "",
   });
@@ -50,22 +57,46 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
     return (weight / (heightInMeters * heightInMeters)).toFixed(1);
   };
 
+  const convertToKg = (value: number, unit: "kg" | "lbs") => {
+    if (unit === "lbs") {
+      return value * 0.453592;
+    }
+    return value;
+  };
+
+  const convertFromKg = (value: number, unit: "kg" | "lbs") => {
+    if (unit === "lbs") {
+      return value / 0.453592;
+    }
+    return value;
+  };
+
+  const getDisplayWeight = (kgValue: string | number) => {
+    if (!kgValue) return "";
+    const numValue = typeof kgValue === "string" ? parseFloat(kgValue) : kgValue;
+    return weightUnit === "lbs" ? convertFromKg(numValue, "lbs").toFixed(1) : numValue.toFixed(1);
+  };
+
   const handleSave = async () => {
-    const weight = formData.weight ? Number(formData.weight) : null;
+    const weightInKg = formData.weight ? convertToKg(Number(formData.weight), weightUnit) : null;
+    const targetWeightInKg = formData.target_weight ? convertToKg(Number(formData.target_weight), weightUnit) : null;
     const height = formData.height ? Number(formData.height) : null;
-    const bmi = weight && height ? Number(calculateBMI(weight, height)) : null;
+    const bmi = weightInKg && height ? Number(calculateBMI(weightInKg, height)) : null;
 
     const { data, error } = await supabase
       .from("patients")
       .update({
         age: formData.age ? Number(formData.age) : null,
         height: height,
-        weight: weight,
-        target_weight: formData.target_weight ? Number(formData.target_weight) : null,
+        weight: weightInKg,
+        target_weight: targetWeightInKg,
         body_fat_percentage: formData.body_fat_percentage ? Number(formData.body_fat_percentage) : null,
+        muscle_percentage: formData.muscle_percentage ? Number(formData.muscle_percentage) : null,
         metabolic_age: formData.metabolic_age ? Number(formData.metabolic_age) : null,
         bmi: bmi,
         dietary_restrictions: formData.dietary_restrictions || null,
+        allergies: formData.allergies || null,
+        pathologies: formData.pathologies || null,
         activity_level: formData.activity_level || null,
         notes: formData.notes || null,
       })
@@ -104,6 +135,52 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
           )}
         </CardHeader>
         <CardContent className="space-y-6">
+          {isEditing && (
+            <div className="flex gap-2 mb-4">
+              <Button
+                type="button"
+                variant={weightUnit === "kg" ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  if (weightUnit === "lbs") {
+                    setWeightUnit("kg");
+                    if (formData.weight) {
+                      setFormData({
+                        ...formData,
+                        weight: convertToKg(Number(formData.weight), "lbs").toFixed(1),
+                        target_weight: formData.target_weight
+                          ? convertToKg(Number(formData.target_weight), "lbs").toFixed(1)
+                          : "",
+                      });
+                    }
+                  }
+                }}
+              >
+                KG
+              </Button>
+              <Button
+                type="button"
+                variant={weightUnit === "lbs" ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  if (weightUnit === "kg") {
+                    setWeightUnit("lbs");
+                    if (formData.weight) {
+                      setFormData({
+                        ...formData,
+                        weight: convertFromKg(Number(formData.weight), "lbs").toFixed(1),
+                        target_weight: formData.target_weight
+                          ? convertFromKg(Number(formData.target_weight), "lbs").toFixed(1)
+                          : "",
+                      });
+                    }
+                  }
+                }}
+              >
+                LBS
+              </Button>
+            </div>
+          )}
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="age">Age</Label>
@@ -128,7 +205,7 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
+              <Label htmlFor="weight">Weight ({weightUnit})</Label>
               <Input
                 id="weight"
                 type="number"
@@ -140,7 +217,7 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="target_weight">Target Weight (kg)</Label>
+              <Label htmlFor="target_weight">Target Weight ({weightUnit})</Label>
               <Input
                 id="target_weight"
                 type="number"
@@ -157,8 +234,24 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
                 id="body_fat"
                 type="number"
                 step="0.1"
+                min="0"
+                max="100"
                 value={formData.body_fat_percentage}
                 onChange={(e) => setFormData({ ...formData, body_fat_percentage: e.target.value })}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="muscle_percentage">Muscle Percentage (%)</Label>
+              <Input
+                id="muscle_percentage"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                value={formData.muscle_percentage}
+                onChange={(e) => setFormData({ ...formData, muscle_percentage: e.target.value })}
                 disabled={!isEditing}
               />
             </div>
@@ -206,6 +299,30 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
             </div>
 
             <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="allergies">Allergies</Label>
+              <Textarea
+                id="allergies"
+                value={formData.allergies}
+                onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
+                disabled={!isEditing}
+                rows={2}
+                placeholder="List any food allergies or intolerances"
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="pathologies">Pathologies</Label>
+              <Textarea
+                id="pathologies"
+                value={formData.pathologies}
+                onChange={(e) => setFormData({ ...formData, pathologies: e.target.value })}
+                disabled={!isEditing}
+                rows={2}
+                placeholder="List any medical conditions or pathologies"
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="notes">Notes</Label>
               <Textarea
                 id="notes"
@@ -219,7 +336,7 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">BMI</CardTitle>
@@ -249,7 +366,7 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
             <Weight className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{patient.weight || "N/A"}</div>
+            <div className="text-2xl font-bold">{patient.weight ? patient.weight.toFixed(1) : "N/A"}</div>
             <p className="text-xs text-muted-foreground">kg</p>
           </CardContent>
         </Card>
@@ -260,8 +377,28 @@ const PatientOverview = ({ patient, onUpdate }: { patient: PatientData; onUpdate
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{patient.target_weight || "N/A"}</div>
+            <div className="text-2xl font-bold">{patient.target_weight ? patient.target_weight.toFixed(1) : "N/A"}</div>
             <p className="text-xs text-muted-foreground">kg</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Body Fat</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{patient.body_fat_percentage ? `${patient.body_fat_percentage}%` : "N/A"}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Muscle</CardTitle>
+            <Dumbbell className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{patient.muscle_percentage ? `${patient.muscle_percentage}%` : "N/A"}</div>
           </CardContent>
         </Card>
       </div>
