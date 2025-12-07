@@ -552,13 +552,13 @@ export type Database = {
     Functions: {
       create_notification: {
         Args: {
-          notification_message: string
-          notification_related_id?: string
-          notification_title: string
-          notification_type: string
-          target_user_id: string
+          p_message: string
+          p_related_id?: string
+          p_title: string
+          p_type: string
+          p_user_id: string
         }
-        Returns: string
+        Returns: undefined
       }
     }
     Enums: {
