@@ -195,6 +195,17 @@ const translations = {
     'common.loading': 'Loading...',
     'common.time': 'Time',
     'common.calories': 'cal',
+    
+    // Weekly Summary
+    'weeklySummary.title': 'Weekly Summary',
+    'weeklySummary.description': 'Your meal and hydration overview for this week',
+    'weeklySummary.loading': 'Loading weekly data...',
+    'weeklySummary.mealsCompleted': 'Meals Completed',
+    'weeklySummary.waterIntake': 'Water Intake',
+    'weeklySummary.dailyBreakdown': 'Daily Breakdown',
+    'weeklySummary.noActivity': 'None',
+    'weeklySummary.some': 'Some',
+    'weeklySummary.complete': 'Complete',
   },
   es: {
     // Navigation
@@ -380,6 +391,17 @@ const translations = {
     'common.loading': 'Cargando...',
     'common.time': 'Hora',
     'common.calories': 'cal',
+    
+    // Weekly Summary
+    'weeklySummary.title': 'Resumen Semanal',
+    'weeklySummary.description': 'Tu resumen de comidas e hidratación de esta semana',
+    'weeklySummary.loading': 'Cargando datos semanales...',
+    'weeklySummary.mealsCompleted': 'Comidas Completadas',
+    'weeklySummary.waterIntake': 'Consumo de Agua',
+    'weeklySummary.dailyBreakdown': 'Desglose Diario',
+    'weeklySummary.noActivity': 'Nada',
+    'weeklySummary.some': 'Algo',
+    'weeklySummary.complete': 'Completo',
   },
 };
 
