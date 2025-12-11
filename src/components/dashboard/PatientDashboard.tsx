@@ -7,6 +7,7 @@ import GoalProgress from "./GoalProgress";
 import AppointmentCalendar from "./AppointmentCalendar";
 import DailyMealChecklist from "./DailyMealChecklist";
 import WaterTracker from "./WaterTracker";
+import WeeklySummary from "./WeeklySummary";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -257,6 +258,11 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
           </TabsList>
 
           <TabsContent value="overview" className="mt-0">
+            {/* Goal Progress Section */}
+            <div className="mb-6">
+              <GoalProgress patientId={userId} />
+            </div>
+
             {/* Daily Tracking Section */}
             <div className="grid gap-6 md:grid-cols-2 mb-6">
               <DailyMealChecklist 
@@ -264,6 +270,11 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
                 mealPlanId={mealPlans.length > 0 ? mealPlans[0].id : null} 
               />
               <WaterTracker userId={userId} />
+            </div>
+
+            {/* Weekly Summary */}
+            <div className="mb-6">
+              <WeeklySummary userId={userId} />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
