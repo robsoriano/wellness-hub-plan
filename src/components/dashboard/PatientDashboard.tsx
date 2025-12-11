@@ -5,6 +5,8 @@ import MealPlanDetail from "./MealPlanDetail";
 import AddProgressLogDialog from "./AddProgressLogDialog";
 import GoalProgress from "./GoalProgress";
 import AppointmentCalendar from "./AppointmentCalendar";
+import DailyMealChecklist from "./DailyMealChecklist";
+import WaterTracker from "./WaterTracker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -255,6 +257,15 @@ const PatientDashboard = ({ profile, userId }: PatientDashboardProps) => {
           </TabsList>
 
           <TabsContent value="overview" className="mt-0">
+            {/* Daily Tracking Section */}
+            <div className="grid gap-6 md:grid-cols-2 mb-6">
+              <DailyMealChecklist 
+                userId={userId} 
+                mealPlanId={mealPlans.length > 0 ? mealPlans[0].id : null} 
+              />
+              <WaterTracker userId={userId} />
+            </div>
+
             <div className="grid gap-6 md:grid-cols-2">
               <Card>
                 <CardHeader>

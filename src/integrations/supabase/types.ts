@@ -53,6 +53,38 @@ export type Database = {
         }
         Relationships: []
       }
+      meal_completions: {
+        Row: {
+          completed_at: string
+          completed_date: string
+          id: string
+          meal_plan_item_id: string
+          patient_id: string
+        }
+        Insert: {
+          completed_at?: string
+          completed_date?: string
+          id?: string
+          meal_plan_item_id: string
+          patient_id: string
+        }
+        Update: {
+          completed_at?: string
+          completed_date?: string
+          id?: string
+          meal_plan_item_id?: string
+          patient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_completions_meal_plan_item_id_fkey"
+            columns: ["meal_plan_item_id"]
+            isOneToOne: false
+            referencedRelation: "meal_plan_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meal_plan_items: {
         Row: {
           calories: number | null
@@ -542,6 +574,36 @@ export type Database = {
           prep_time?: number | null
           protein?: number | null
           servings?: number | null
+        }
+        Relationships: []
+      }
+      water_logs: {
+        Row: {
+          created_at: string
+          glasses_count: number
+          goal_glasses: number
+          id: string
+          log_date: string
+          patient_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          glasses_count?: number
+          goal_glasses?: number
+          id?: string
+          log_date?: string
+          patient_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          glasses_count?: number
+          goal_glasses?: number
+          id?: string
+          log_date?: string
+          patient_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
