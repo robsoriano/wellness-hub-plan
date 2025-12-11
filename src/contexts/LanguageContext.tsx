@@ -103,6 +103,15 @@ const translations = {
     'auth.backToSignIn': 'Back to Sign In',
     'auth.resetEmailSent': 'Password reset email sent! Check your inbox.',
     'auth.enterEmail': 'Please enter your email address',
+    'auth.setNewPassword': 'Set New Password',
+    'auth.enterNewPassword': 'Enter your new password below',
+    'auth.newPassword': 'New Password',
+    'auth.confirmPassword': 'Confirm Password',
+    'auth.passwordRequirements': 'Must be at least 8 characters with uppercase, lowercase, and number',
+    'auth.passwordsDoNotMatch': 'Passwords do not match',
+    'auth.updatePassword': 'Update Password',
+    'auth.updating': 'Updating...',
+    'auth.passwordUpdated': 'Password updated successfully!',
     
     // Dashboard
     'dashboard.title': 'Nutritionist Dashboard',
@@ -272,6 +281,15 @@ const translations = {
     'auth.backToSignIn': 'Volver a Iniciar Sesión',
     'auth.resetEmailSent': '¡Correo de restablecimiento enviado! Revisa tu bandeja.',
     'auth.enterEmail': 'Por favor ingresa tu correo electrónico',
+    'auth.setNewPassword': 'Establecer Nueva Contraseña',
+    'auth.enterNewPassword': 'Ingresa tu nueva contraseña abajo',
+    'auth.newPassword': 'Nueva Contraseña',
+    'auth.confirmPassword': 'Confirmar Contraseña',
+    'auth.passwordRequirements': 'Debe tener al menos 8 caracteres con mayúscula, minúscula y número',
+    'auth.passwordsDoNotMatch': 'Las contraseñas no coinciden',
+    'auth.updatePassword': 'Actualizar Contraseña',
+    'auth.updating': 'Actualizando...',
+    'auth.passwordUpdated': '¡Contraseña actualizada correctamente!',
     
     // Dashboard
     'dashboard.title': 'Panel de Nutricionista',
