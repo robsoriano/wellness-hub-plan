@@ -97,6 +97,12 @@ const translations = {
     'auth.creatingAccount': 'Creating account...',
     'auth.signedIn': 'Successfully signed in!',
     'auth.accountCreated': 'Account created! Please check your email.',
+    'auth.forgotPassword': 'Forgot your password?',
+    'auth.sendResetLink': 'Send Reset Link',
+    'auth.sendingReset': 'Sending...',
+    'auth.backToSignIn': 'Back to Sign In',
+    'auth.resetEmailSent': 'Password reset email sent! Check your inbox.',
+    'auth.enterEmail': 'Please enter your email address',
     
     // Dashboard
     'dashboard.title': 'Nutritionist Dashboard',
@@ -260,6 +266,12 @@ const translations = {
     'auth.creatingAccount': 'Creando cuenta...',
     'auth.signedIn': '¡Sesión iniciada correctamente!',
     'auth.accountCreated': '¡Cuenta creada! Por favor revisa tu correo electrónico.',
+    'auth.forgotPassword': '¿Olvidaste tu contraseña?',
+    'auth.sendResetLink': 'Enviar Enlace',
+    'auth.sendingReset': 'Enviando...',
+    'auth.backToSignIn': 'Volver a Iniciar Sesión',
+    'auth.resetEmailSent': '¡Correo de restablecimiento enviado! Revisa tu bandeja.',
+    'auth.enterEmail': 'Por favor ingresa tu correo electrónico',
     
     // Dashboard
     'dashboard.title': 'Panel de Nutricionista',
