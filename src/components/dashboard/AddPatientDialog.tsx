@@ -86,33 +86,21 @@ const AddPatientDialog = ({ open, onOpenChange, nutritionistId, onPatientAdded }
     setLoading(true);
 
     try {
-      // Look up user by email
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, role")
-        .eq("email", formData.email.trim())
-        .single();
+      // Look up user by email using secure function
+      const { data: lookupData, error: lookupError } = await supabase
+        .rpc("lookup_patient_by_email", { p_email: formData.email.trim() });
 
-      if (profileError || !profileData) {
+      if (lookupError || !lookupData || lookupData.length === 0) {
         toast({
           title: "Patient not found",
-          description: "No patient found with this email address. They need to sign up first.",
+          description: "No patient found with this email address. They need to sign up first as a patient.",
           variant: "destructive",
         });
         setLoading(false);
         return;
       }
 
-      // Check if user is a patient
-      if (profileData.role !== "patient") {
-        toast({
-          title: "Invalid user",
-          description: "This user is not registered as a patient.",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
+      const profileData = lookupData[0];
 
       // Check if patient is already added
       const { data: existingPatient } = await supabase
