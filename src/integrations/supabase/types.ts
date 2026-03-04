@@ -622,6 +622,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      lookup_patient_by_email: {
+        Args: { p_email: string }
+        Returns: {
+          id: string
+          role: string
+        }[]
+      }
     }
     Enums: {
       user_role: "nutritionist" | "patient"
